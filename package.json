@@ -1,0 +1,25 @@
+{
+  "name": "mozu",
+  "version": "1.0.0",
+  "description": "Personal Discord Assistant",
+  "main": "mozu.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "Discord",
+    "Smultar",
+    "Bizu",
+    "Mozu",
+    "Art",
+    "People"
+  ],
+  "author": "Smultar",
+  "license": "ISC",
+  "dependencies": {
+    "discord.js": "^13.1.0",
+    "node": "16.6.1",
+    "sequelize": "^6.6.5",
+    "sqlite3": "^5.0.2"
+  }
+}
