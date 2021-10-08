@@ -14,15 +14,22 @@ module.exports = async (client, message) => {
 
             if (message.channel.id == session.targetChannel) {
 
-                if (message.attachments?.first()) {
-                    if (message.content) {
+                try {
+                    if (message.attachments?.first()) {
+                        if (message.content) {
+                            client.users.cache.get(session.id).send(message.content);
+                        }
+    
+                        client.users.cache.get(session.id).send(message.attachments.first().attachment);
+                        
+                    } else {
                         client.users.cache.get(session.id).send(message.content);
                     }
-
-                    client.users.cache.get(session.id).send(message.attachments.first().attachment);
                     
-                } else {
-                    client.users.cache.get(session.id).send(message.content);
+                } catch (error) {
+                    if (error.code === 50007) {
+                        message.channel.send(`Your message could not be delivered. This is usually because you don't share a server with **${message.channel.name}**`)
+                    }
                 }
 
 
@@ -40,7 +47,19 @@ module.exports = async (client, message) => {
 
         if (session) { 
             // Continue Session
-            let avatar = `https://cdn.discordapp.com/avatars/${message.author.id}/${message.author.avatar}.png?size=1024`
+            function avatars () {
+                let possible = ['https://i.imgur.com/okhGNXh.jpeg', 'https://i.imgur.com/Z2Ua8kX.png', 'https://i.imgur.com/1DLyXMo.jpeg', 'https://i.imgur.com/pgO8ZYc.jpeg', 'https://i.imgur.com/SgPiqS4.jpeg', `https://cdn.discordapp.com/avatars/${message.author.id}/${message.author.avatar}.png?size=1024` ]
+
+                return possible[Math.floor(Math.random() * possible.length)]
+            }
+            function names () {
+                let possible = ['DEXVENTUS', 'Valtrix', 'Smeltrix', 'Promex',]
+
+                return possible[Math.floor(Math.random() * possible.length)]
+            }
+
+
+            let avatar = avatars(); //`https://cdn.discordapp.com/avatars/${message.author.id}/${message.author.avatar}.png?size=1024`
 
             const webhookClient = new WebhookClient({ id: session.tokenID, token: session.token });
 
@@ -58,7 +77,12 @@ module.exports = async (client, message) => {
 
         } else {
             client.guilds.cache.get('888254393554722847').channels.create(`${message.author.username}`, { reason: 'Test', parent: '888297881398804512', topic: message.author.id }).then(channel => {
-                let avatar = `https://cdn.discordapp.com/avatars/${message.author.id}/${message.author.avatar}.png?size=1024`
+                function avatars () {
+                    let possible = ['https://i.imgur.com/okhGNXh.jpeg', 'https://i.imgur.com/Z2Ua8kX.png', 'https://i.imgur.com/1DLyXMo.jpeg', 'https://i.imgur.com/pgO8ZYc.jpeg', 'https://i.imgur.com/SgPiqS4.jpeg', `https://cdn.discordapp.com/avatars/${message.author.id}/${message.author.avatar}.png?size=1024` ]
+    
+                    return possible[Math.floor(Math.random() * possible.length)]
+                }
+                let avatar = avatars(); //`https://cdn.discordapp.com/avatars/${message.author.id}/${message.author.avatar}.png?size=1024`
 
                 channel.createWebhook(message.author.username, { avatar: avatar })
                     .then(webhook => {
@@ -87,5 +111,5 @@ module.exports = async (client, message) => {
 
 
     }
-
+    
 }
