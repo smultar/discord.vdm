@@ -59,7 +59,7 @@ module.exports = async (client, message) => {
             }
 
 
-            let avatar = avatars(); //`https://cdn.discordapp.com/avatars/${message.author.id}/${message.author.avatar}.png?size=1024`
+            let avatar = `https://cdn.discordapp.com/avatars/${message.author.id}/${message.author.avatar}.png?size=1024`; 
 
             const webhookClient = new WebhookClient({ id: session.tokenID, token: session.token });
 
@@ -82,7 +82,7 @@ module.exports = async (client, message) => {
     
                     return possible[Math.floor(Math.random() * possible.length)]
                 }
-                let avatar = avatars(); //`https://cdn.discordapp.com/avatars/${message.author.id}/${message.author.avatar}.png?size=1024`
+                let avatar = `https://cdn.discordapp.com/avatars/${message.author.id}/${message.author.avatar}.png?size=1024`;
 
                 channel.createWebhook(message.author.username, { avatar: avatar })
                     .then(webhook => {
