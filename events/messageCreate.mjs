@@ -1,5 +1,5 @@
 const { MessageEmbed, WebhookClient } = require('discord.js');
-module.exports = async (client, message) => {
+export default async (client, message) => {
     if (message.stickers?.first()) return;
 
     if (message.guild) {

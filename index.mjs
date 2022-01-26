@@ -22,7 +22,3 @@ import handler from './handlers/event.mjs'; handler(client);
 
 
 client.login(settings.token);
-
-client.on('ready', () => {
-    console.log('test')
-})
