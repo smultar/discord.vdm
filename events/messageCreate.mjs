@@ -43,11 +43,13 @@ export default async () => {
     
         } else {
             // Direct Messages
-    
+
+            // Ignores Self
             if (message.author.id == '888253387072749598') return;
-    
-            let session = client.activeSessions.find(session => session.id === message.author.id);
-    
+
+            let session = client.message.get(message.author.id);
+
+            //let session = client.activeSessions.find(session => session.id === message.author.id);
     
             if (session) { 
                 // Continue Session
@@ -69,6 +71,11 @@ export default async () => {
     
     
             } else {
+
+                // Creates New Session
+
+                client.guilds.
+
                 client.guilds.cache.get('888254393554722847').channels.create(`${message.author.username}`, { reason: 'Test', parent: '888297881398804512', topic: message.author.id }).then(channel => {
 
                     let avatar = `https://cdn.discordapp.com/avatars/${message.author.id}/${message.author.avatar}.png?size=1024`;

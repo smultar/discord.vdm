@@ -24,6 +24,7 @@ const messages = new Sequelize('messages', 'admin', 'bizu', {
 // Storage Definitions
 const settingsDef = settings.define('settings', {
     name: {type: Sequelize.STRING, unique: true},
+    value: {type: Sequelize.ABSTRACT},
     
 })
 
