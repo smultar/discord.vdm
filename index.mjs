@@ -17,8 +17,6 @@ client.activeSessions = [];
 export default client;
 
 import handler from './handlers/event.mjs'; handler(client);
-//import ('./handlers/event.mjs').then(async handler => { console.log(handler); await handler(client) }).catch(e => console.log(e));
-
 
 
 client.login(settings.token);
