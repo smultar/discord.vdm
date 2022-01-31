@@ -10,9 +10,9 @@ const client = new Client({
 });
 
 // Client Objects
-client.discord = Discord;
 client.commands = new Collection();
-client.activeSessions = [];
+client.messages = new Collection();
+client.reminders = new Collection();
 
 export default client;
 
