@@ -2,7 +2,6 @@ import Discord, { Client, Collection, Intents } from 'discord.js';
 import fs from 'fs'; import sequelize from 'sequelize';
 import settings from './Settings.json';
 
-
 // Instantiate client
 const client = new Client({ 
     intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_TYPING, Intents.FLAGS.GUILD_MESSAGE_REACTIONS, Intents.FLAGS.DIRECT_MESSAGES, Intents.FLAGS.DIRECT_MESSAGE_TYPING, Intents.FLAGS.DIRECT_MESSAGE_REACTIONS, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_PRESENCES],
@@ -10,15 +9,16 @@ const client = new Client({
 });
 
 // Client Objects
-client.discord = Discord;
-client.commands = new Collection();
-client.activeSessions = [];
+client.commands = new Collection(); 
+client.threads = new Collection(); 
+client.reminders = new Collection();
+client.activeSessions = new Collection();
+client.webHooks = new Collection();
+client.feeds = new Collection();
 
 export default client;
 
 import handler from './handlers/event.mjs'; handler(client);
-//import ('./handlers/event.mjs').then(async handler => { console.log(handler); await handler(client) }).catch(e => console.log(e));
-
-
 
 client.login(settings.token);
+

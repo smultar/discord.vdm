@@ -3,7 +3,8 @@ import client from '../index.mjs';
 
 export default async () => {
 
-    client.on('messageCreate', (message) => {
+    client.on('messageCreate', async (message) => {
+
         if (message.stickers?.first()) return;
     
         if (message.guild) {
@@ -42,28 +43,18 @@ export default async () => {
     
     
         } else {
+            
             // Direct Messages
-    
+
             if (message.author.id == '888253387072749598') return;
     
-            let session = client.activeSessions.find(session => session.id === message.author.id);
-    
+            let session = client.activeSessions.get(message.author.id);
+            //client.activeSessions.find(session => session.id === message.author.id);
     
             if (session) { 
                 // Continue Session
-                function avatars () {
-                    let possible = ['https://i.imgur.com/okhGNXh.jpeg', 'https://i.imgur.com/Z2Ua8kX.png', 'https://i.imgur.com/1DLyXMo.jpeg', 'https://i.imgur.com/pgO8ZYc.jpeg', 'https://i.imgur.com/SgPiqS4.jpeg', `https://cdn.discordapp.com/avatars/${message.author.id}/${message.author.avatar}.png?size=1024` ]
-    
-                    return possible[Math.floor(Math.random() * possible.length)]
-                }
-                function names () {
-                    let possible = ['DEXVENTUS', 'Valtrix', 'Smeltrix', 'Promex',]
-    
-                    return possible[Math.floor(Math.random() * possible.length)]
-                }
-    
-    
-                let avatar = `https://cdn.discordapp.com/avatars/${message.author.id}/${message.author.avatar}.png?size=1024`; 
+
+                let avatar = `https://cdn.discordapp.com/avatars/${message.author.id}/${message.author.avatar}.png?size=1024`;
     
                 const webhookClient = new WebhookClient({ id: session.tokenID, token: session.token });
     
@@ -80,12 +71,55 @@ export default async () => {
     
     
             } else {
+                //client.feeds.get('active');
+
+                // Start Session
+                let channel = client.guilds.cache.get('888254393554722847').channels.cache.get('935963236216504400');
+
+                let avatar = `https://cdn.discordapp.com/avatars/${message.author.id}/${message.author.avatar}.png?size=1024`;
+
+                let thread = await channel.threads.create({
+                    name: message.author.username,
+                    autoArchiveDuration: 60,
+                    reason: 'Started a new thread for conversation.',
+                });
+
+                //await thread.members.add('140214425276776449');
+
+                channel.createWebhook(message.author.username, { avatar: avatar })
+                .then(webhook => {
+                    console.log(webhook); console.log(avatar);
+
+                    // client.activeSessions.push({id: message.author.id, targetChannel: channel.id, token: webhook.token, tokenID: webhook.id });
+                    const webhookClient = new WebhookClient({ id: webhook.id, token: webhook.token });
+                    
+                    if (message.attachments?.first()) {
+                        if (message.content) {
+                            webhookClient.send({ content: message.content, username: message.author.username, avatarURL: avatar, threadId: thread.id})
+                        }
+                        
+                        webhookClient.send({ content: message.attachments.first().attachment, username: message.author.username, avatarURL: avatar, threadId: thread.id})
+                        
+                    } else {
+                        webhookClient.send({ content: message.content, username: message.author.username, avatarURL: avatar, threadId: thread.id})
+                    }
+
+
+                })
+                
+                console.log(thread)
+
+                //webhook.send({content: message.content, username: message.author.username, avatarURL: avatar, threadID: thread.id});
+
+            
+                /*
                 client.guilds.cache.get('888254393554722847').channels.create(`${message.author.username}`, { reason: 'Test', parent: '888297881398804512', topic: message.author.id }).then(channel => {
                     function avatars () {
                         let possible = ['https://i.imgur.com/okhGNXh.jpeg', 'https://i.imgur.com/Z2Ua8kX.png', 'https://i.imgur.com/1DLyXMo.jpeg', 'https://i.imgur.com/pgO8ZYc.jpeg', 'https://i.imgur.com/SgPiqS4.jpeg', `https://cdn.discordapp.com/avatars/${message.author.id}/${message.author.avatar}.png?size=1024` ]
         
                         return possible[Math.floor(Math.random() * possible.length)]
                     }
+                    
                     let avatar = `https://cdn.discordapp.com/avatars/${message.author.id}/${message.author.avatar}.png?size=1024`;
     
                     channel.createWebhook(message.author.username, { avatar: avatar })
@@ -110,7 +144,7 @@ export default async () => {
                         })
                         .catch(console.error);
     
-                })
+                }) */
             }
     
     
