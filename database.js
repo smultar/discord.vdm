@@ -31,6 +31,7 @@ const settingsDef = settings.define('settings', {
 const write = async (data) => {
 
 }
+
 const read = async (type) => {
     switch (type) {
         case "settings": {
@@ -47,6 +48,6 @@ const read = async (type) => {
     }
 }
 
-const update = async (data) => {}
-const delete = async (data) => {}
-const define = async (data) => {}
+const update = async (data) => {};
+const remove = async (data) => {};
+const define = async (data) => {};
