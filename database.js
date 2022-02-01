@@ -150,11 +150,31 @@ const fetchAll = async (type) => {
     }
 }
 
-const remove = async (data) => {
+const remove = async (type, target) => {
+    // Error Handling
+    try {
+        switch (type) {
+            case "set": { // Settings
+                const data = await settingsDef.destroy({ where: { name: target }});
+                return data;
+            }
 
+            case "rem": { // Reminders
+                const data = await remindersDef.destroy({ where: { id: target }});
+                return data;
+            }
+
+            case "mes": { // Messages
+                const data = await messagesDef.destroy({ where: { id: target }});
+                return data;
+            }
+        }
+
+    } catch (error) {
+        return null;
+    }
 };
 
-const define = async (data) => {};
 
 // Notes:
 // - Reminders:
