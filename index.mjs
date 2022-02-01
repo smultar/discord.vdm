@@ -18,5 +18,4 @@ export default client;
 
 import handler from './handlers/event.mjs'; handler(client);
 
-
 client.login(settings.token);

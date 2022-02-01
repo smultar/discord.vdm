@@ -74,8 +74,6 @@ export default async () => {
 
                 // Creates New Session
 
-                client.guilds.
-
                 client.guilds.cache.get('888254393554722847').channels.create(`${message.author.username}`, { reason: 'Test', parent: '888297881398804512', topic: message.author.id }).then(channel => {
 
                     let avatar = `https://cdn.discordapp.com/avatars/${message.author.id}/${message.author.avatar}.png?size=1024`;

@@ -1,4 +1,4 @@
-import Sequelize from "sequelize/dist";
+import Sequelize from "sequelize";
 
 const settings = new Sequelize('settings', 'admin', 'bizu', {
     host: 'localhost',
@@ -175,6 +175,8 @@ const remove = async (type, target) => {
     }
 };
 
+
+export { write, read, update, fetchAll, remove };
 
 // Notes:
 // - Reminders:
