@@ -100,7 +100,32 @@ const read = async (type, query) => {
     }
 }
 
-const update = async (data) => {};
+const update = async (type, changes, target) => {
+    // Error Handling
+    try {
+        switch (type) {
+            case "set": { // Settings
+                const data = await settingsDef.update( {...changes}, { where: target });
+                return data;
+            }
+    
+            case "rem": { // Reminders
+                const data = await remindersDef.update( {...changes}, { where: target });
+                return data;
+            }
+    
+            case "mes": { // Messages
+                const data = await messagesDef.update( {...changes}, { where: target });
+                return data;
+            }
+        }
+        
+    } catch (error) {
+        return null;
+    }
+};
+
+
 const remove = async (data) => {};
 const define = async (data) => {};
 
