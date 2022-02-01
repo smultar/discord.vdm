@@ -1,48 +1,50 @@
 import client from "../index.mjs";
-import { write, settingsDef} from "../database.js";
+import { WebhookClient } from 'discord.js';
+import { write, read, fetchAll } from "../database/index.js";
 
 export default async () => {
 
     client.once("ready", async () => {
-
-
+// Database Instance
         // Sync Reminders
+        const reminders = await fetchAll("rem");
+        reminders.forEach(async (value) => {
+            client.reminder.set(value.id, {
+                thread: value.thread,
+                token: value.token,
+                tokenID: value.tokenID,
+                status: value.status,
+            });
+        });
 
         // Sync Messages
+        const messages = await fetchAll("mes"); console.log(messages)
+        messages.forEach(async (value) => {
+
+            client.messages.set(value.id, {
+                id: value.id,
+                thread: value.thread,
+                token: value.token,
+                tokenID: value.tokenID,
+                status: value.status,
+            });
+        });
 
         // Sync Webhooks
+        const webhook = await read("set", { id: 'webhook' });
+        const token = await read("set", { id: 'webhookToken' });
+        client.webhook = new WebhookClient({ id: webhook.value, token: token.value }); console.log(client.webhook);
+
+
+// Discord Presence
 
         // Client Console Update
         client.user.setActivity('Bizu Scream', { type: 'LISTENING', status: 'online'});
         
         // Client Presence Update
         console.log(`Connection System: ${client.user.tag} is connected to Discord's servers.`);
-
-        settingsDef.sync();
-
-        setTimeout(async () => {
-            console.log("Database System: Database has been synced.");
-
-            // Tmp Actions
-            let messages = await write("set", {
-                name: 'messages',
-                value: '935963236216504400'
-            });
-    
-            let reminders = await write("set", {
-                name: 'reminders',
-                value: '935964011831365663'
-            })
-    
-            let category = await write("set", {
-                name: 'category',
-                value: '888299808937373706'
-            })
-            console.log(messages);
-            console.log(reminders);
-            console.log(category);
-        }, 5000);
-
-
+        
+        // Discord Message
+        client.guilds.cache.get('888254393554722847').channels.cache.get('935963236216504400').send(`${client.user.tag} has rebooted and loaded new changes.`); 
     })
 }

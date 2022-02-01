@@ -128,22 +128,22 @@ const update = async (type, changes, target) => {
     }
 };
 
-const fetchAll = async (type) => {
+const fetchAll = async (type, tag) => {
     // Error Handling
     try {
         switch (type) {
             case "set": { // Settings
-                const data = await settingsDef.fetchAll({ attributes: ['name'] });
+                const data = await (tag) ? settingsDef.findAll({attributes: [`${tag}`]}) : settingsDef.findAll();
                 return data;
             }
             
             case "rem": { // Reminders
-                const data = await remindersDef.fetchAll({ attributes: ['id'] });
+                const data = await (tag) ? remindersDef.findAll({attributes: [`${tag}`]}) : remindersDef.findAll();
                 return data;
             }
             
             case "mes": { // Messages
-                const data = await messagesDef.fetchAll({ attributes: ['id'] });
+                const data = (tag) ? messagesDef.findAll({attributes: [`${tag}`]}) : messagesDef.findAll();
                 return data;
             }
         }
@@ -158,7 +158,7 @@ const remove = async (type, target) => {
     try {
         switch (type) {
             case "set": { // Settings
-                const data = await settingsDef.destroy({ where: { name: target }});
+                const data = await settingsDef.destroy({ where: { id: target }});
                 return data;
             }
             
