@@ -44,7 +44,6 @@ const messageDef = settings.define('settings', {
     status: { type: Sequelize.STRING },
 });
 
-
 settings.sync(); reminders.sync(); messages.sync();
 
 
@@ -71,3 +70,16 @@ const read = async (type) => {
 const update = async (data) => {};
 const remove = async (data) => {};
 const define = async (data) => {};
+
+// Notes:
+// - Reminders:
+//     Date and Reason
+
+// - Messages:
+//     Target Channel, Thread under channel, with hook.
+//     Thread States
+
+// - Settings:
+//     Target Channel
+//     Auto Add `Helm` to channel. True/False
+//     Accepting Messages. True/False
