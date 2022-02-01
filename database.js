@@ -29,14 +29,14 @@ const settingsDef = settings.define('settings', {
 });
 
 // Storage Definitions
-const reminderDef = settings.define('settings', {
+const remindersDef = reminders.define('settings', {
     id: { type: Sequelize.STRING, unique: true},
     time: { type: Sequelize.STRING },
     value: { type: Sequelize.STRING},
 });
 
 // Storage Definitions
-const messageDef = settings.define('settings', {
+const messagesDef = messages.define('settings', {
     id: { type: Sequelize.STRING, unique: true },
     thread: { type: Sequelize.STRING },
     token: { type: Sequelize.STRING },
@@ -44,7 +44,7 @@ const messageDef = settings.define('settings', {
     status: { type: Sequelize.STRING },
 });
 
-settings.sync(); reminders.sync(); messages.sync();
+settingsDef.sync(); remindersDef.sync(); messagesDef.sync();
 
 
 const write = async (data) => {
@@ -58,12 +58,12 @@ const write = async (data) => {
             }
     
             case "rem": { // Reminders
-                const data = await reminderDef.create(data);
+                const data = await remindersDef.create(data);
                 return data;
             }
     
             case "mes": { // Messages
-                const data = await messageDef.create(data);
+                const data = await messagesDef.create(data);
                 return data;
             }
         }
