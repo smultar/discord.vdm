@@ -21,12 +21,31 @@ const messages = new Sequelize('messages', 'admin', 'bizu', {
     Storage: 'reminders.sqlite',
 });
 
-// Storage Definitions
+
+// Reminders Definitions
 const settingsDef = settings.define('settings', {
     name: {type: Sequelize.STRING, unique: true},
-    value: {type: Sequelize.ABSTRACT},
-    
-})
+    value: {type: Sequelize.STRING},
+});
+
+// Storage Definitions
+const reminderDef = settings.define('settings', {
+    id: { type: Sequelize.STRING, unique: true},
+    time: { type: Sequelize.STRING },
+    value: { type: Sequelize.STRING},
+});
+
+// Storage Definitions
+const messageDef = settings.define('settings', {
+    id: { type: Sequelize.STRING, unique: true },
+    thread: { type: Sequelize.STRING },
+    token: { type: Sequelize.STRING },
+    tokenID: { type: Sequelize.STRING },
+    status: { type: Sequelize.STRING },
+});
+
+
+settings.sync(); reminders.sync(); messages.sync();
 
 
 const write = async (data) => {
@@ -35,15 +54,15 @@ const write = async (data) => {
 
 const read = async (type) => {
     switch (type) {
-        case "settings": {
+        case "set": { // Settings
 
         }
 
-        case "reminders": {
+        case "rem": { // Reminders
 
         }
 
-        case "messages": {
+        case "mes": { // Messages
 
         }
     }
