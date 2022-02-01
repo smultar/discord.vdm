@@ -47,7 +47,7 @@ const messagesDef = messages.define('settings', {
 settingsDef.sync(); remindersDef.sync(); messagesDef.sync();
 
 
-const write = async (data) => {
+const write = async (type, data) => {
 
     // Error Handling
     try {
@@ -74,19 +74,29 @@ const write = async (data) => {
 
 }
 
-const read = async (type) => {
-    switch (type) {
-        case "set": { // Settings
+const read = async (type, query) => {
 
+    // Error Handling
+    try {
+        switch (type) {
+            case "set": { // Settings
+                const data = await settingsDef.findOne({where: query});
+                return data;
+            }
+    
+            case "rem": { // Reminders
+                const data = await remindersDef.findOne({where: query});
+                return data;
+            }
+    
+            case "mes": { // Messages
+                const data = await messagesDef.findOne({where: query});
+                return data;
+            }
         }
-
-        case "rem": { // Reminders
-
-        }
-
-        case "mes": { // Messages
-
-        }
+        
+    } catch (error) {
+        return null;
     }
 }
 
