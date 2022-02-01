@@ -21,10 +21,9 @@ const messages = new Sequelize('messages', 'admin', 'bizu', {
     Storage: 'reminders.sqlite',
 });
 
-
 // Reminders Definitions
 const settingsDef = settings.define('settings', {
-    name: {type: Sequelize.STRING, unique: true},
+    name: {type: Sequelize.STRING, unique: true, primaryKey: true},
     value: {type: Sequelize.STRING},
 });
 
@@ -44,38 +43,40 @@ const messagesDef = messages.define('settings', {
     status: { type: Sequelize.STRING },
 });
 
-settingsDef.sync(); remindersDef.sync(); messagesDef.sync();
 
 
 const write = async (type, data) => {
-
+    
     // Error Handling
     try {
         switch (type) {
             case "set": { // Settings
-                const data = await settingsDef.create(data);
-                return data;
+                const stream = await settingsDef.create(data);
+                console.log(stream)
+                return stream;
             }
-    
+            
             case "rem": { // Reminders
-                const data = await remindersDef.create(data);
-                return data;
+                const stream = await remindersDef.create(data);
+                return stream;
             }
-    
+            
             case "mes": { // Messages
-                const data = await messagesDef.create(data);
-                return data;
+                const stream = await messagesDef.create(data);
+                return stream;
             }
         }
         
     } catch (error) {
+
+        console.log(error);
         return null;
     }
-
+    
 }
 
 const read = async (type, query) => {
-
+    
     // Error Handling
     try {
         switch (type) {
@@ -83,12 +84,12 @@ const read = async (type, query) => {
                 const data = await settingsDef.findOne({where: query});
                 return data;
             }
-    
+            
             case "rem": { // Reminders
                 const data = await remindersDef.findOne({where: query});
                 return data;
             }
-    
+            
             case "mes": { // Messages
                 const data = await messagesDef.findOne({where: query});
                 return data;
@@ -108,12 +109,12 @@ const update = async (type, changes, target) => {
                 const data = await settingsDef.update( {...changes}, { where: target });
                 return data;
             }
-    
+            
             case "rem": { // Reminders
                 const data = await remindersDef.update( {...changes}, { where: target });
                 return data;
             }
-    
+            
             case "mes": { // Messages
                 const data = await messagesDef.update( {...changes}, { where: target });
                 return data;
@@ -133,18 +134,18 @@ const fetchAll = async (type) => {
                 const data = await settingsDef.fetchAll({ attributes: ['name'] });
                 return data;
             }
-
+            
             case "rem": { // Reminders
                 const data = await remindersDef.fetchAll({ attributes: ['id'] });
                 return data;
             }
-
+            
             case "mes": { // Messages
                 const data = await messagesDef.fetchAll({ attributes: ['id'] });
                 return data;
             }
         }
-
+        
     } catch (error) {
         return null;
     }
@@ -158,25 +159,26 @@ const remove = async (type, target) => {
                 const data = await settingsDef.destroy({ where: { name: target }});
                 return data;
             }
-
+            
             case "rem": { // Reminders
                 const data = await remindersDef.destroy({ where: { id: target }});
                 return data;
             }
-
+            
             case "mes": { // Messages
                 const data = await messagesDef.destroy({ where: { id: target }});
                 return data;
             }
         }
-
+        
     } catch (error) {
         return null;
     }
 };
 
+settingsDef.sync(); remindersDef.sync(); messagesDef.sync();
 
-export { write, read, update, fetchAll, remove };
+export { write, read, update, fetchAll, remove, settingsDef };
 
 // Notes:
 // - Reminders:
