@@ -178,7 +178,7 @@ const remove = async (type, target) => {
     }
 };
 
-settingsDef.sync({ force: true }); remindersDef.sync({ force: true }); messagesDef.sync({ force: true });
+settingsDef.sync(); remindersDef.sync(); messagesDef.sync();
 
 export { write, read, update, remove,  fetchAll };
 
