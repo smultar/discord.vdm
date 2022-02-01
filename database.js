@@ -49,6 +49,29 @@ settings.sync(); reminders.sync(); messages.sync();
 
 const write = async (data) => {
 
+    // Error Handling
+    try {
+        switch (type) {
+            case "set": { // Settings
+                const data = await settingsDef.create(data);
+                return data;
+            }
+    
+            case "rem": { // Reminders
+                const data = await reminderDef.create(data);
+                return data;
+            }
+    
+            case "mes": { // Messages
+                const data = await messageDef.create(data);
+                return data;
+            }
+        }
+        
+    } catch (error) {
+        return null;
+    }
+
 }
 
 const read = async (type) => {
