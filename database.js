@@ -125,8 +125,35 @@ const update = async (type, changes, target) => {
     }
 };
 
+const fetchAll = async (type) => {
+    // Error Handling
+    try {
+        switch (type) {
+            case "set": { // Settings
+                const data = await settingsDef.fetchAll({ attributes: ['name'] });
+                return data;
+            }
 
-const remove = async (data) => {};
+            case "rem": { // Reminders
+                const data = await remindersDef.fetchAll({ attributes: ['id'] });
+                return data;
+            }
+
+            case "mes": { // Messages
+                const data = await messagesDef.fetchAll({ attributes: ['id'] });
+                return data;
+            }
+        }
+
+    } catch (error) {
+        return null;
+    }
+}
+
+const remove = async (data) => {
+
+};
+
 const define = async (data) => {};
 
 // Notes:
