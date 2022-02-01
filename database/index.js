@@ -1,42 +1,44 @@
 import Sequelize from "sequelize";
 
+// Setting Definitions
 const settings = new Sequelize('settings', 'admin', 'bizu', {
     host: 'localhost',
     dialect: 'sqlite',
     logging: false,
-    Storage: 'settings.sqlite',
+    storage: './database/settings.sqlite',
 });
 
+const settingsDef = settings.define('settings', {
+    id: {type: Sequelize.STRING, unique: true, primaryKey: true},
+    value: {type: Sequelize.STRING},
+});
+
+
+// Reminder Definitions
 const reminders = new Sequelize('reminders', 'admin', 'bizu', {
     host: 'localhost',
     dialect: 'sqlite',
     logging: false,
-    Storage: 'reminders.sqlite',
+    storage: './database/reminders.sqlite',
 });
 
-const messages = new Sequelize('messages', 'admin', 'bizu', {
-    host: 'localhost',
-    dialect: 'sqlite',
-    logging: false,
-    Storage: 'reminders.sqlite',
-});
-
-// Reminders Definitions
-const settingsDef = settings.define('settings', {
-    name: {type: Sequelize.STRING, unique: true, primaryKey: true},
-    value: {type: Sequelize.STRING},
-});
-
-// Storage Definitions
-const remindersDef = reminders.define('settings', {
-    id: { type: Sequelize.STRING, unique: true},
+const remindersDef = reminders.define('reminders', {
+    id: { type: Sequelize.STRING, unique: true, primaryKey: true },
     time: { type: Sequelize.STRING },
     value: { type: Sequelize.STRING},
 });
 
-// Storage Definitions
-const messagesDef = messages.define('settings', {
-    id: { type: Sequelize.STRING, unique: true },
+
+// Messages Definitions
+const messages = new Sequelize('messages', 'admin', 'bizu', {
+    host: 'localhost',
+    dialect: 'sqlite',
+    logging: false,
+    storage: './database/messages.sqlite',
+});
+
+const messagesDef = messages.define('messages', {
+    id: { type: Sequelize.STRING, unique: true, primaryKey: true },
     thread: { type: Sequelize.STRING },
     token: { type: Sequelize.STRING },
     tokenID: { type: Sequelize.STRING },
@@ -44,6 +46,7 @@ const messagesDef = messages.define('settings', {
 });
 
 
+// Database Functions
 
 const write = async (type, data) => {
     
@@ -52,8 +55,7 @@ const write = async (type, data) => {
         switch (type) {
             case "set": { // Settings
                 const stream = await settingsDef.create(data);
-                console.log(stream)
-                return stream;
+                return stream; console.log(data)
             }
             
             case "rem": { // Reminders
@@ -176,9 +178,9 @@ const remove = async (type, target) => {
     }
 };
 
-settingsDef.sync(); remindersDef.sync(); messagesDef.sync();
+settingsDef.sync({ force: true }); remindersDef.sync({ force: true }); messagesDef.sync({ force: true });
 
-export { write, read, update, fetchAll, remove, settingsDef };
+export { write, read, update, remove,  fetchAll };
 
 // Notes:
 // - Reminders:
