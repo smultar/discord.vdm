@@ -9,16 +9,11 @@ const client = new Client({
 });
 
 // Client Objects
-client.commands = new Collection(); 
-client.threads = new Collection(); 
+client.commands = new Collection();
+client.messages = new Collection();
 client.reminders = new Collection();
-client.activeSessions = new Collection();
-client.webHooks = new Collection();
-client.feeds = new Collection();
 
 export default client;
 
 import handler from './handlers/event.mjs'; handler(client);
-
-client.login(settings.token);
 
