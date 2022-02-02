@@ -5,39 +5,37 @@ import { write, read, fetchAll } from '../database/index.js';
 export default async () => {
 
     client.on('messageCreate', async (message) => {
-        if (message.stickers?.first()) return;
+        if (message.stickers?.first()) return; if (message.type == 'RECIPIENT_REMOVE') return;
     
         if (message.guild) {
             // Server
-            
             if (message.author.id == '888253387072749598') return;
             if (message.webhookId) return;
             if (message.hasThread) return;
-            console.log(message)
-            console.log(message.thread)
-            console.log(message.channel.id)
-           
+            console.log(message);
+
             let session = client.messages.find(u => u.thread === message.channel.id);
-            console.log(session)
-            
+
             if (session) {
     
                 try {
 
                     if (message.attachments?.first()) {
                         if (message.content) {
-                            client.users.cache.get(session.id).send(message.content);
+                            await client.users.cache.get(session.id).send(message.content);
                         }
     
-                        client.users.cache.get(session.id).send(message.attachments.first().attachment);
+                        await client.users.cache.get(session.id).send(message.attachments.first().attachment);
                         
                     } else {
-                        client.users.cache.get(session.id).send(message.content);
+                       await client.users.cache.get(session.id).send(message.content);
                     }
                     
                 } catch (error) {
-                    if (error.code === 50007) {
-                        message.thread.send(`Your message could not be delivered. This is usually because you don't share a server with **${message.author.username}**`)
+                    console.log(error)
+                    if (error.code == 50007) {
+                        message.channel.send(`Your message could not be delivered. This is usually because you don't share a server with **Recipient**`);
+                        message.delete();
                     }
                 }
 

@@ -43,8 +43,6 @@ export default async () => {
         
         // Client Presence Update
         console.log(`Connection System: ${client.user.tag} is connected to Discord's servers.`);
-        
-        // Discord Message
-        client.guilds.cache.get('888254393554722847').channels.cache.get('935963236216504400').send(`${client.user.tag} has rebooted and loaded new changes.`); 
+
     })
 }
