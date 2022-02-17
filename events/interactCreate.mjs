@@ -4,10 +4,9 @@ import { write, read, fetchAll } from "../database/index.js";
 
 export default async () => {
 
-    client.on("interactCreate", async (interaction) => {
-        if (!interaction.isCommand()) return;
-
-        const command = client.commands.get(interaction.command);
+    client.on('interactionCreate', async (interaction) => { console.log(interaction)
+        const command = client.commands.get(interaction.commandName);
+        
         if (!command) return;
 
         try { 

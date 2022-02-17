@@ -6,8 +6,8 @@ const globPromise = promisify(glob);
 
 export default async () => {
     const eventFiles = await globPromise(`interactions/*.mjs`);
-    
+
     eventFiles.map((value) => import(`../${value}`).then(async interaction => { 
-        client.commands.set(interaction.name, interaction); console.log(interaction);
+        client.commands.set(interaction.name, interaction);
     }).catch(e => console.log(e)));
 }
