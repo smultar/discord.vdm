@@ -5,24 +5,29 @@
   "description": "Personal Discord Assistant",
   "license": "ISC",
   "main": "mozu.js",
-  
   "scripts": {
-    "dev": "nodemon --experimental-json-modules index.mjs"  
+    "dev": "nodemon --experimental-json-modules index.mjs"
   },
-
-  "keywords": [ "Discord", "Smultar", "Bizu", "Mozu", "Art", "People" ],
-
+  "keywords": [
+    "Discord",
+    "Smultar",
+    "Bizu",
+    "Mozu",
+    "Art",
+    "People"
+  ],
   "dependencies": {
+    "@discordjs/builders": "^0.12.0",
+    "@discordjs/rest": "^0.3.0",
+    "discord-api-types": "^0.27.1",
     "discord.js": "^13.6.0",
     "glob": "^7.2.0",
     "node": "17.4.0",
     "sequelize": "^6.15.0",
     "sqlite3": "^5.0.0"
   },
-
   "devDependencies": {
     "nodemon": "^2.0.15"
   },
-
   "type": "module"
 }

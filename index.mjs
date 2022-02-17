@@ -15,6 +15,7 @@ client.reminders = new Collection();
 
 export default client;
 
-import handler from './handlers/event.mjs'; handler(client);
-// Interactions Handler Here
+import handler from './handlers/event.mjs'; handler();
+import interactions from './handlers/interaction.mjs'; interactions();
 
+client.login(settings.token);

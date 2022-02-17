@@ -1,4 +1,5 @@
 import client from "../index.mjs";
+import deploy from '../deploycommand.mjs'; 
 import { WebhookClient } from 'discord.js';
 import { write, read, fetchAll } from "../database/index.js";
 
@@ -52,5 +53,6 @@ export default async () => {
         // Client Presence Update
         console.log(`Connection System: ${client.user.tag} is connected to Discord's servers.`);
 
+        deploy();
     })
 }
