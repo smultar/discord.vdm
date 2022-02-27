@@ -14,7 +14,17 @@ export default async () => {
             if (message.hasThread) return;
             console.log(message);
 
+      
             let session = client.messages.find(u => u.thread === message.channel.id);
+
+            let history = {
+                id: message.id,
+                pair: null,
+                thread: message.channel.id,
+                user: null,
+                type: 'server',
+            }
+
 
             if (session) {
     
@@ -22,13 +32,31 @@ export default async () => {
 
                     if (message.attachments?.first()) {
                         if (message.content) {
-                            await client.users.cache.get(session.id).send(message.content);
+                            let carrier = await client.users.cache.get(session.id).send(message.content); 
+                            
+                            // History Pair
+                            history.user = session.id; history.pair = carrier.id; 
+
+                            client.history.set(message.id, history);
+                            setTimeout(() => { client.history.delete(message.id) }, 300000);
                         }
     
-                        await client.users.cache.get(session.id).send(message.attachments.first().attachment);
+                        let carrier = await client.users.cache.get(session.id).send(message.attachments.first().attachment);
+                        
+                        // History Pair 
+                        history.user = session.id; history.pair = carrier.id;
+                        
+                        client.history.set(message.id, history);
+                        setTimeout(() => { client.history.delete(message.id) }, 300000);
                         
                     } else {
-                       await client.users.cache.get(session.id).send(message.content);
+                        let carrier = await client.users.cache.get(session.id).send(message.content);
+                        
+                        // History Pair
+                        history.user = session.id; history.pair = carrier.id;
+                        
+                        client.history.set(message.id, history);
+                        setTimeout(() => { client.history.delete(message.id) }, 300000);
                     }
                     
                 } catch (error) {
@@ -49,8 +77,16 @@ export default async () => {
             // Ignores Self
             if (message.author.id == '888253387072749598') return;
 
+            let history = {
+                id: message.id,
+                pair: null,
+                thread: null,
+                user: null,
+                type: 'direct',
+            }
+
             let session = client.messages.get(message.author.id);
-            console.log(session)
+
     
             if (session) { 
                 // Continue Session
@@ -59,13 +95,25 @@ export default async () => {
     
                 if (message.attachments?.first()) {
                     if (message.content) {
-                        client.webhook.send({ content: message.content, username: message.author.username, avatarURL: avatar, threadId: session.thread })
+                        let carrier = await client.webhook.send({ content: message.content, username: message.author.username, avatarURL: avatar, threadId: session.thread });
+                        
+                        // History Pair
+                        history.pair = carrier.id; history.thread = carrier.channel_id; client.history.set(message.id, history);
+                        setTimeout(() => { client.history.delete(message.id) }, 300000);
                     }
                     
-                    client.webhook.send({ content: message.attachments.first().attachment, username: message.author.username, avatarURL: avatar, threadId: session.thread })
+                    let carrier = await client.webhook.send({ content: message.attachments.first().attachment, username: message.author.username, avatarURL: avatar, threadId: session.thread });
+                    
+                    // History Pair
+                    history.pair = carrier.id; history.thread = carrier.channel_id; client.history.set(message.id, history);
+                    setTimeout(() => { client.history.delete(message.id) }, 300000);
                     
                 } else {
-                    client.webhook.send({ content: message.content, username: message.author.username, avatarURL: avatar, threadId: session.thread })
+                    let carrier = await client.webhook.send({ content: message.content, username: message.author.username, avatarURL: avatar, threadId: session.thread });
+                    
+                    // History Pair
+                    history.pair = carrier.id; history.thread = carrier.channel_id; client.history.set(message.id, history);
+                    setTimeout(() => { client.history.delete(message.id) }, 300000);
                 }
     
     
@@ -102,13 +150,25 @@ export default async () => {
 
                 if (message.attachments?.first()) {
                     if (message.content) {
-                        client.webhook.send({ content: message.content, username: message.author.username, avatarURL: avatar, threadId: thread.id })
+                        let carrier = await client.webhook.send({ content: message.content, username: message.author.username, avatarURL: avatar, threadId: thread.id });
+
+                        // History Pair
+                        history.pair = carrier.id; client.history.set(message.id, history);
+                        setTimeout(() => { client.history.delete(message.id) }, 300000);
                     }
                     
-                    client.webhook.send({ content: message.attachments.first().attachment, username: message.author.username, avatarURL: avatar, threadId: thread.id })
+                    let carrier = await client.webhook.send({ content: message.attachments.first().attachment, username: message.author.username, avatarURL: avatar, threadId: thread.id })
                     
+                    // History Pair
+                    history.pair = carrier.id; client.history.set(message.id, history);
+                    setTimeout(() => { client.history.delete(message.id) }, 300000);
+
                 } else {
-                    client.webhook.send({ content: message.content, username: message.author.username, avatarURL: avatar, threadId: thread.id })
+                    let carrier = await client.webhook.send({ content: message.content, username: message.author.username, avatarURL: avatar, threadId: thread.id })
+                    
+                    // History Pair
+                    history.pair = carrier.id; client.history.set(message.id, history);
+                    setTimeout(() => { client.history.delete(message.id) }, 300000);
                 }
 
             }
