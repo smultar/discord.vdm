@@ -1,7 +1,7 @@
 import client from "../index.mjs";
 import deploy from '../deploycommand.mjs'; 
 import { WebhookClient } from 'discord.js';
-import { write, read, fetchAll } from "../database/index.js";
+import { write, read, fetchAll, remove, update } from "../database/index.js";
 
 export default async () => {
 
@@ -19,7 +19,7 @@ export default async () => {
         });
 
         // Sync Messages
-        const messages = await fetchAll("mes"); console.log(messages)
+        const messages = await fetchAll("mes");
         messages.forEach(async (value) => {
 
             client.messages.set(value.id, {
@@ -34,7 +34,52 @@ export default async () => {
         // Sync Webhooks
         const webhook = await read("set", { id: 'webhook' });
         const token = await read("set", { id: 'webhookToken' });
-        client.webhook = new WebhookClient({ id: webhook.value, token: token.value }); console.log(client.webhook);
+        client.webhook = new WebhookClient({ id: webhook.value, token: token.value });
+
+        // Sync Settings
+        
+        //const removeItem = await remove("set", '209129015154311171'); console.log(remove);
+
+
+        // Self Diagnostics
+
+        try {
+
+            // Webhook Check
+            let webhookCheck = await client.webhook.send(`Checking self integrity`); await client.webhook.deleteMessage(webhookCheck.id);
+
+        } catch (e) {
+
+            switch (e.code) {
+                case 10015: {
+
+                    let settings = await fetchAll("set"); console.log(settings); settings = settings.map(value => value.dataValues);
+
+                    // Settings Pull
+                    const guild = await read("set", { id: 'guild' }).then(value => value.dataValues);
+                    const messages = await read("set", { id: 'messages' }).then(value => value.dataValues);
+                    const channel = await client.guilds.cache.get(guild.value).channels.cache.get(messages.value);
+                    
+                    // Create Webhook
+                    const webhook = await channel.createWebhook(client.user.username, { avatar: client.user.avatarURL(), reason: 'Self diagnostics repair' });
+
+                    // Save Webhook
+                    await update("set", {id: 'webhook'}, { value: webhook.id });
+                    await update("set", {id: 'webhookToken'}, { value: webhook.token });
+
+                    // Set Client Webhook
+                    client.webhook = new WebhookClient({ id: webhook.id, token: webhook.token });
+
+
+                } break;
+            
+                default:
+                    break;
+            }
+
+            console.log(e);
+        }
+
 
 
 // Discord Presence
