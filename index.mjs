@@ -11,6 +11,7 @@ const client = new Client({
 // Client Objects
 client.commands = new Collection();
 client.messages = new Collection();
+client.history = new Collection();
 client.reminders = new Collection();
 
 export default client;
