@@ -103,12 +103,13 @@ const read = async (type, query) => {
     }
 }
 
-const update = async (type, changes, target) => {
+const update = async (type, target, changes) => {
     // Error Handling
     try {
         switch (type) {
             case "set": { // Settings
                 const data = await settingsDef.update( {...changes}, { where: target });
+                console.log(data);
                 return data;
             }
             
