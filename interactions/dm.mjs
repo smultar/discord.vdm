@@ -1,8 +1,6 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { write, read, fetchAll, remove } from '../database/index.js';
 
-
-
 export const name = 'dm';
 
 export const command = new SlashCommandBuilder()
@@ -11,7 +9,6 @@ export const command = new SlashCommandBuilder()
     .addUserOption((option) =>  option.setName('close').setDescription('Closes a conversation with the target user.'))
     .addChannelOption((option) =>  option.setName('close-channel').setDescription('Closes a conversation thats associated with the target channel.'));
         
-
 export default async (interaction, client) => {
 
     if (interaction.commandName !== 'dm') return;
