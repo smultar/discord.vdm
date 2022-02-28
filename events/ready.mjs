@@ -21,7 +21,7 @@ export default async () => {
         // Sync Messages
         const messages = await fetchAll("mes");
         messages.forEach(async (value) => {
-
+            //await remove("mes", value.id); console.log(remove);
             client.messages.set(value.id, {
                 id: value.id,
                 thread: value.thread,
@@ -31,18 +31,31 @@ export default async () => {
             });
         });
 
+        console.log(messages);
+
         // Sync Webhooks
         const webhook = await read("set", { id: 'webhook' });
         const token = await read("set", { id: 'webhookToken' });
+
         client.webhook = new WebhookClient({ id: webhook.value, token: token.value });
 
         // Sync Settings
+
+
+        // Sync Threads
+        const guild = await read("set", { id: 'guild' }).then(value => value.dataValues);
+        const threadParent = await read("set", { id: 'messages' }).then(value => value.dataValues);
+        const threads = await client.guilds.cache.get(guild.value).channels.cache.get(threadParent.value).threads.fetch();
+        const archivedThreads = await client.guilds.cache.get(guild.value).channels.cache.get(threadParent.value).threads.fetchArchived();
+
+        console.log(threads);
+        console.log(archivedThreads);
+        
         
         //const removeItem = await remove("set", '209129015154311171'); console.log(remove);
 
 
         // Self Diagnostics
-
         try {
 
             // Webhook Check
