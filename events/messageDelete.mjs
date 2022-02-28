@@ -5,10 +5,7 @@ import { write, read, fetchAll } from '../database/index.js';
 export default async () => {
 
     client.on('messageDelete', async (message) => {
-        if (message.stickers?.first()) return; if (message.type == 'RECIPIENT_REMOVE') return;
-        console.log('messageDelete:', message);
-        console.log('messageDelete:', message.guild);
-        
+        if (message.stickers?.first()) return; if (message.type == 'RECIPIENT_REMOVE') return; if (message.author == null) return;
         
         if (message.guild) {
             // Server
@@ -38,7 +35,7 @@ export default async () => {
 
             let history = client.history.find(u => u.id === message.id);
             if (history == null) return;
-            
+
             if (history.type == 'direct') {
                 try {   
                     await client.webhook.deleteMessage(history.pair, history.thread);
