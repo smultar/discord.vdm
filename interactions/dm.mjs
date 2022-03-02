@@ -24,6 +24,7 @@ export default async (interaction, client) => {
     if (open) {
         const guild = await read("set", { id: 'guild' });
         const messageChannel = await read("set", { id: 'messages' });
+        await interaction.deferReply({ephemeral: true});
         
         try {
             await client.users.cache.get(open.id).send(`Hello, **${open.username}!** You have a new message from ${interaction.user.username}!\n\n*To reply, simply talk in this \`dm\` channel.*`);
