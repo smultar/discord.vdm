@@ -94,32 +94,56 @@ export default async () => {
                 // Continue Session
 
                 let avatar = `https://cdn.discordapp.com/avatars/${message.author.id}/${message.author.avatar}.png?size=1024`; 
+                
+                try {
+                    if (message.attachments?.first()) {
+                        if (message.content) {
+                            let carrier = await client.webhook.send({ files: message.attachments.map(u => u.url), content: message.content, username: message.author.username, avatarURL: avatar, threadId: session.thread });
+                            
+                            // History Pair
+                            history.pair = carrier.id; history.thread = carrier.channel_id; client.history.set(message.id, history);
+                            setTimeout(() => { client.history.delete(message.id) }, 300000);
     
-                if (message.attachments?.first()) {
-                    if (message.content) {
-                        let carrier = await client.webhook.send({ files: message.attachments.map(u => u.url), content: message.content, username: message.author.username, avatarURL: avatar, threadId: session.thread });
+                        } else {
+    
+                            let carrier = await client.webhook.send({ files: message.attachments.map(u => u.url), username: message.author.username, avatarURL: avatar, threadId: session.thread });
+                            
+                            // History Pair
+                            history.pair = carrier.id; history.thread = carrier.channel_id; client.history.set(message.id, history);
+                            setTimeout(() => { client.history.delete(message.id) }, 300000);
+                        }
                         
-                        // History Pair
-                        history.pair = carrier.id; history.thread = carrier.channel_id; client.history.set(message.id, history);
-                        setTimeout(() => { client.history.delete(message.id) }, 300000);
-
+                        
                     } else {
-
-                        let carrier = await client.webhook.send({ files: message.attachments.map(u => u.url), username: message.author.username, avatarURL: avatar, threadId: session.thread });
+    
+                        let carrier = await client.webhook.send({ content: message.content, username: message.author.username, avatarURL: avatar, threadId: session.thread });
                         
                         // History Pair
                         history.pair = carrier.id; history.thread = carrier.channel_id; client.history.set(message.id, history);
                         setTimeout(() => { client.history.delete(message.id) }, 300000);
                     }
-                    
-                    
-                } else {
 
-                    let carrier = await client.webhook.send({ content: message.content, username: message.author.username, avatarURL: avatar, threadId: session.thread });
+                } catch (error) {
                     
-                    // History Pair
-                    history.pair = carrier.id; history.thread = carrier.channel_id; client.history.set(message.id, history);
-                    setTimeout(() => { client.history.delete(message.id) }, 300000);
+                    if (error.code == 40005) {
+                        if (message.content) {
+                            let carrier = await client.webhook.send({ content: message.content, username: message.author.username, avatarURL: avatar, threadId: session.thread });
+                            await client.webhook.send({ content: `*${message.author.username} uploaded a file larger then \`8 MB\`, preview is unavailable*\n${message.attachments.map(u => u.url).toString()}`, username: message.author.username, avatarURL: avatar, threadId: session.thread });
+                            
+                            // History Pair
+                            history.pair = carrier.id; history.thread = carrier.channel_id; client.history.set(message.id, history);
+                            setTimeout(() => { client.history.delete(message.id) }, 300000);
+    
+                        } else {
+    
+                            let carrier = await client.webhook.send({ content: `*${message.author.username} uploaded a file larger then \`8 MB\`, preview is unavailable*\n${message.attachments.map(u => u.url).toString()}`, username: message.author.username, avatarURL: avatar, threadId: session.thread });
+                            
+                            // History Pair
+                            history.pair = carrier.id; history.thread = carrier.channel_id; client.history.set(message.id, history);
+                            setTimeout(() => { client.history.delete(message.id) }, 300000);
+                        }
+
+                    }
                 }
     
     
