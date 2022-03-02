@@ -25,6 +25,7 @@ const reminders = new Sequelize('reminders', 'admin', 'bizu', {
 const remindersDef = reminders.define('reminders', {
     id: { type: Sequelize.STRING, unique: true, primaryKey: true },
     time: { type: Sequelize.STRING },
+    interval: { type: Sequelize.STRING },
     value: { type: Sequelize.STRING},
 });
 
