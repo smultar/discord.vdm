@@ -10,7 +10,7 @@ export default async () => {
         // Sync Reminders
         const reminders = await fetchAll("rem");
         reminders.forEach(async (value) => {
-            client.reminder.set(value.id, {
+            client.reminders.set(value.id, {
                 thread: value.thread,
                 token: value.token,
                 tokenID: value.tokenID,
