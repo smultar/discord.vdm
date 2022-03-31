@@ -60,6 +60,7 @@ const write = async (type, data) => {
             }
             
             case "rem": { // Reminders
+                console.log(data);
                 const stream = await remindersDef.create(data);
                 return stream;
             }

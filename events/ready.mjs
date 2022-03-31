@@ -10,13 +10,67 @@ export default async () => {
         // Sync Reminders
         const reminders = await fetchAll("rem");
         reminders.forEach(async (value) => {
+
+            console.log(value);
+
             client.reminders.set(value.id, {
-                thread: value.thread,
-                token: value.token,
-                tokenID: value.tokenID,
-                status: value.status,
+                id: value.id,
+                time: value.time,
+                interval: value.interval,
+                value: value.value,
             });
         });
+
+        console.log(reminders);
+
+        setInterval(async () => {
+            const reminder = client.reminders.filter(value => value.time <= new Date().getTime());
+            
+            reminder.forEach(async (value) => {
+                console.log(value);
+                console.log(value.interval !== 'null')
+                if (value.interval !== 'null') {
+
+                    const reminderTimeStamp = new Date(~~value.time + ~~value.interval);
+
+                    const reminder = await update("rem", { id: value.id }, {
+                        id: value.id,
+                        time: reminderTimeStamp.getTime(),
+                        interval: value.interval,
+                        value: value.value,
+                    });
+
+                    client.reminders.set(value.id, {
+                        id: value.id,
+                        time: reminderTimeStamp.getTime(),
+                        interval: value.interval,
+                        value: value.value,
+                    });
+                    
+                    console.log(client.reminders);
+
+                    client.users.cache.get('203639901693018112').send(`${value.value}\n\nI'll remind you again on **${reminderTimeStamp}**`);
+
+                } else {
+
+                    client.reminders.delete(value.id); console.log(client.reminders);
+                    client.users.cache.get('203639901693018112').send(`${value.value}`);
+                    await remove("rem", value.id);
+
+                    const guild = await read("set", { id: 'guild' }).then(value => value.dataValues);
+                    const messages = await read("set", { id: 'reminders' }).then(value => value.dataValues);
+                    const channel = await client.guilds.cache.get(guild.value).channels.cache.get(messages.value);
+                    
+                    channel.messages.fetch(value.id).then((target) => {
+                        target.delete();
+                    }).catch(() => {
+                        console.log('Could not delete a reminder message.');
+                    });
+                }
+
+            });
+
+        }, 15000);
 
         // Sync Messages
         const messages = await fetchAll("mes");
