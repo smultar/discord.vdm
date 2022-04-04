@@ -12,9 +12,7 @@ export default async () => {
             if (message.author.id == '888253387072749598') return;
             if (message.webhookId) return;
             if (message.hasThread) return;
-            console.log(message);
 
-      
             let session = client.messages.find(u => u.thread === message.channel.id);
 
             let history = {
@@ -25,13 +23,13 @@ export default async () => {
                 type: 'server',
             }
 
-
             if (session) {
     
                 try {
 
                     if (message.attachments?.first()) {
                         if (message.content) {
+
                             let carrier = await client.users.cache.get(session.id).send({ content: message.content, files: message.attachments.map(u => u.url)}); 
                             
                             // History Pair
@@ -53,6 +51,7 @@ export default async () => {
     
                         
                     } else {
+
                         let carrier = await client.users.cache.get(session.id).send(message.content);
                         
                         // History Pair
@@ -63,7 +62,9 @@ export default async () => {
                     }
                     
                 } catch (error) {
-                    console.log(error)
+
+                    console.log(error);
+
                     if (error.code == 50007) {
                         message.channel.send(`Your message could not be delivered. This is usually because you don't share a server with **Recipient**, or they have DMs disabled.`);
                         message.delete();
@@ -98,6 +99,7 @@ export default async () => {
                 try {
                     if (message.attachments?.first()) {
                         if (message.content) {
+
                             let carrier = await client.webhook.send({ files: message.attachments.map(u => u.url), content: message.content, username: message.author.username, avatarURL: avatar, threadId: session.thread });
                             
                             // History Pair
@@ -127,6 +129,7 @@ export default async () => {
                     
                     if (error.code == 40005) {
                         if (message.content) {
+                            
                             let carrier = await client.webhook.send({ content: message.content, username: message.author.username, avatarURL: avatar, threadId: session.thread });
                             await client.webhook.send({ content: `*${message.author.username} uploaded a file larger then \`8 MB\`, preview is unavailable*\n${message.attachments.map(u => u.url).toString()}`, username: message.author.username, avatarURL: avatar, threadId: session.thread });
                             
