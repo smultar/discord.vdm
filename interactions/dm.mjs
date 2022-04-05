@@ -53,19 +53,21 @@ export default async (interaction, client) => {
                 status: 'active'
             });
 
-            interaction.reply({content: `I have created a dm with **${open.username}**.`, ephemeral: true });
+            interaction.followUp({content: `I have created a dm with **${open.username}**.`, ephemeral: true });
         
         } catch (error) {
+
             if (error.code == 50007) {
-                interaction.reply({content: `Sorry **${interaction.user.username}**, but I couldn't find any user with the username **${open.username}**. This is usually because you don't share a server with **Recipient**, or they have DMs disabled.`, ephemeral: true });
+                interaction.followUp({content: `Sorry **${interaction.user.username}**, but I couldn't find any user with the username **${open.username}**. This is usually because you don't share a server with **Recipient**, or they have DMs disabled.`, ephemeral: true });
                 message.delete();
             }
+
         }
     };
 
     if (close) {
         const guild = await read("set", { id: 'guild' });
-        const messageChannel = await read("set", { id: 'messages' });
+        await interaction.deferReply({ephemeral: true});
 
         try {
 
@@ -88,22 +90,24 @@ export default async (interaction, client) => {
                     await client.users.cache.get(close.id).send(`Hello, **${close.username}!** Your conversation with **${interaction.user.username}** has been closed.`);
                     await thread.setArchived(true);
 
-                    interaction.reply({content: `Your conversation with **${close.username}** has been closed.`, ephemeral: true });
+                    interaction.followUp({content: `Your conversation with **${close.username}** has been closed.`, ephemeral: true });
                     
                 } catch (error) {
+
                     if (error.code == 50007) {
                         closing.delete(); 
                         
                         await thread.send(`Hello, **${close.username}!** Your conversation with **${interaction.user.username}** has been closed.\n\nHowever this message could not be delivered. This is usually because you don't share a server with **Recipient**, or they have DMs disabled.`);
                         await thread.setArchived(true);
 
-                        interaction.reply({content: `Your conversation with **${close.username}** has been closed.`, ephemeral: true });
+                        interaction.followUp({content: `Your conversation with **${close.username}** has been closed.`, ephemeral: true });
                     }
                     
                 }
 
             } else {
-                interaction.reply({ content: `Could not find a conversation session with **${close.username}**.`, ephemeral: true });
+
+                interaction.followUp({ content: `Could not find a conversation session with **${close.username}**.`, ephemeral: true });
             }
         
         } catch (error) {
@@ -115,7 +119,7 @@ export default async (interaction, client) => {
 
     if (closeChannel) {
         const guild = await read("set", { id: 'guild' });
-        const messageChannel = await read("set", { id: 'messages' });
+        await interaction.deferReply({ephemeral: true});
 
         try {
 
@@ -139,7 +143,7 @@ export default async (interaction, client) => {
                     await user.send(`Hello, **${user.username}!** Your conversation with **${interaction.user.username}** has been closed.`);
                     await thread.setArchived(true);
 
-                    interaction.reply({content: `Your conversation with **${user.username}** has been closed.`, ephemeral: true });
+                    interaction.followUp({content: `Your conversation with **${user.username}** has been closed.`, ephemeral: true });
                     
                 } catch (error) {
                     if (error.code == 50007) {
@@ -148,16 +152,17 @@ export default async (interaction, client) => {
                         await thread.send(`Hello, **${user.username}!** Your conversation with **${interaction.user.username}** has been closed.\n\nHowever this message could not be delivered. This is usually because you don't share a server with **Recipient**, or they have DMs disabled.`);
                         await thread.setArchived(true);
 
-                        interaction.reply({content: `Your conversation with **${user.username}** has been closed.`, ephemeral: true });
+                        interaction.followUp({content: `Your conversation with **${user.username}** has been closed.`, ephemeral: true });
                     }
                     
                 }
 
             } else {
-                interaction.reply({ content: `Could not find a conversation session with **${close.username}**.`, ephemeral: true });
+                interaction.followUp({ content: `Could not find a conversation session with **${close.username}**.`, ephemeral: true });
             }
         
         } catch (error) {
+            interaction.followUp({ content: `Something went wrong **${interaction.user.username}**, please contact **Smultar**.`, ephemeral: true });
             console.log(error);
 
         }
