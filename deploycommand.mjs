@@ -25,8 +25,7 @@ export default async () => {
         
 
     } catch (e) {
-        console.log('Failed to sync commands');
-        console.log(e);
+        console.log('Failed to sync commands', e);
     }
 
 };

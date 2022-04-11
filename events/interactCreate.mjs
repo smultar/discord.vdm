@@ -7,7 +7,7 @@ export default async () => {
     client.on('interactionCreate', async (interaction) => { console.log(interaction)
         const command = client.commands.get(interaction.commandName);
         
-        if (!command) return;
+        if (!command) return console.log('Command not found:', (!command), interaction.commandName);
 
         try { 
 
