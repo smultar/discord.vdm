@@ -343,7 +343,6 @@ export default async (interaction, client) => {
                                 
                             }
                             
-
                         } else {
 
                             return response.editReply({content: `Nothing was changed, the \`channel\` settings remains untouched as they were **${interaction.user.username}**`, components: [], ephemeral: true }); 
@@ -357,7 +356,6 @@ export default async (interaction, client) => {
 
             } catch (error) {
                 // Error Handling
-
                 console.log(error);
             }
 
