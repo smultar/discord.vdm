@@ -304,6 +304,7 @@ export default async (interaction, client) => {
                                 });
     
                                 await update("set", {id: 'messages'}, { value: `${option.id}`});
+                                await update("set", {id: 'guild'}, { value: `${option.guild.id}`});
     
                                 // Settings Pull
                                 const messages = await read("set", { id: 'messages' }).then(value => value.dataValues);
