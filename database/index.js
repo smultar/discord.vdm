@@ -73,8 +73,13 @@ const write = async (type, data) => {
         
     } catch (error) {
 
-        console.log(error);
-        return null;
+        if (error.name === "SequelizeUniqueConstraintError") { 
+            console.log('Database Error: Items already exist.');
+            return null;
+        }
+
+        console.log('Database Error: ' + error);
+        
     }
     
 }
