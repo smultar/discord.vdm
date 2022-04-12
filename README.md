@@ -3,7 +3,7 @@
 </p>
 
 # Discord.vdm
-A **virutal direct** message handler, that mirrors a conversation with its contents between a thread and a target user's dms. Extremely useful for server ticket systems, or a personalized direct messages for client handing.
+A **virtual direct** message handler, that mirrors a conversation with its contents between a thread and a target user's dms. Extremely useful for server ticket systems, or a personalized direct messages for client handing.
 
 If you have any problems, please report them [here](https://github.com/smultar/discord.vdm/issues).
 <p align="center">
