@@ -52,15 +52,22 @@ export default async (interaction, client) => {
 
     // Command Differentiation
     switch (interaction.options.getSubcommand('open')) {
-        
 
         // Open Ticket
         case 'open': { open = interaction.options.getUser('user');
-
+            
+            // Error Handling
             try {
                 
+                // Fetches a possible ticket
+                let session = client.messages.find(u => u.id === open.id); 
+                
                 // Fetch user
-                let targetUser = (interaction.guild.members.cache.get(session.id).displayName) ? interaction.guild.members.cache.get(session.id).displayName : open.username;
+                let targetUser = (interaction.guild.members.cache.get(session.id)?.displayName) ? interaction.guild.members.cache.get(session.id).displayName : open.username;
+
+                // Checks if theres a ticket thread in memory
+                if (session) return interaction.followUp({content: `Sorry **${interaction.member.displayName}**, but there already is an open ticket with **${targetUser}**.`, ephemeral: true });
+        
 
                 // Confirm user exists || Errors if user does not exist
                 await client.users.cache.get(open.id).send(`Hello, **${targetUser}!** You have a new message from ${interaction.user.username}!\n\n*To reply, simply talk in this \`dm\` channel.*`);

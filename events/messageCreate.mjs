@@ -69,6 +69,11 @@ export default async () => {
                         message.channel.send(`Your message could not be delivered. This is usually because you don't share a server with **Recipient**, or they have DMs disabled.`);
                         message.delete();
                     }
+
+                    if (error.name == 'TypeError') {
+                        message.channel.send(`Your message could not be delivered. This is usually because you don't share a server with **Recipient**, or they have DMs disabled.`);
+                        message.delete();
+                    }
                 }
 
             }
