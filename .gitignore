@@ -78,6 +78,6 @@ typings/
 .fusebox/
 
 settings.json
-database/messages.sqlite
-database/reminders.sqlite
-database/settings.sqlite
+
+# Sqlite database file
+*.sqlite
