@@ -9,7 +9,7 @@ export default async () => {
     
         if (message.guild) {
             // Server
-            if (message.author.id == '888253387072749598') return;
+            if (message.author.id == client.user.id) return;
             if (message.webhookId) return;
             if (message.hasThread) return;
 
@@ -84,7 +84,7 @@ export default async () => {
             // Direct Messages
 
             // Ignores Self
-            if (message.author.id == '888253387072749598') return;
+            if (message.author.id == client.user.id) return;
 
             let history = {
                 id: message.id,

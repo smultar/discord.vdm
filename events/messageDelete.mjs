@@ -16,7 +16,7 @@ export default async () => {
                 await remove("rem", message.id);
             }
 
-            if (message.author.id == '888253387072749598') return;
+            if (message.author.id == client.user.id) return;
             if (message.webhookId) return;
             if (message.hasThread) return;
 
@@ -39,7 +39,7 @@ export default async () => {
         } else {
             // DM
             // Ignores Self
-            if (message.author.id == '888253387072749598') return;
+            if (message.author.id == client.user.id) return;
 
             let history = client.history.find(u => u.id === message.id);
             if (history == null) return;
