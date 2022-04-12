@@ -1,5 +1,5 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
-import { MessageActionRow, MessageButton, WebhookClient } from 'discord.js';
+import { MessageActionRow, MessageButton, WebhookClient, Permissions } from 'discord.js';
 
 import { write, read, fetchAll, update, remove } from '../database/index.js';
 import { optionFetch } from '../utilities.mjs';
@@ -42,6 +42,9 @@ export default async (interaction, client) => {
 
     // Respond to user's client
     await interaction.deferReply({ephemeral: true});
+
+    // Permission check
+    if (!interaction.member.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES)) return interaction.followUp({content: `Sorry **${interaction.member.displayName}**, but you don't have the required permissions to execute this command.`, ephemeral: true });
 
     // Configure options
     const guild = await read("set", { id: 'guild' });
