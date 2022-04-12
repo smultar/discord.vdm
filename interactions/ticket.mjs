@@ -59,18 +59,21 @@ export default async (interaction, client) => {
 
             try {
                 
+                // Fetch user
+                let targetUser = (interaction.guild.members.cache.get(session.id).displayName) ? interaction.guild.members.cache.get(session.id).displayName : open.username;
+
                 // Confirm user exists || Errors if user does not exist
-                await client.users.cache.get(open.id).send(`Hello, **${open.username}!** You have a new message from ${interaction.user.username}!\n\n*To reply, simply talk in this \`dm\` channel.*`);
+                await client.users.cache.get(open.id).send(`Hello, **${targetUser}!** You have a new message from ${interaction.user.username}!\n\n*To reply, simply talk in this \`dm\` channel.*`);
 
                 // Creates a new thread for the staff to reply to the user
                 let thread = await client.guilds.cache.get(guild.value).channels.cache.get(messageChannel.value).threads.create({
-                    name: open.username,
+                    name: targetUser,
                     reason: 'New Ticket Session',
                     autoArchiveDuration: 1440,
                 });
 
                 // Places a message in the thread
-                thread.send(`Hello, **${open.username}!** You have a new message from ${interaction.user.username}!\n\n*To reply, simply talk in this \`dm\` channel.*`);
+                thread.send(`Hello, **${targetUser}!** You have a new message from ${interaction.user.username}!\n\n*To reply, simply talk in this \`dm\` channel.*`);
                 
                 // Creates a new ticket in memory
                 client.messages.set(open.id, {
@@ -91,12 +94,16 @@ export default async (interaction, client) => {
                 });
 
                 // Alerts the staff that a ticket has been created
-                interaction.followUp({content: `I have opened a ticket with **${open.username}**.`, ephemeral: true });
+                interaction.followUp({content: `I have opened a ticket with **${targetUser}**.`, ephemeral: true });
 
             } catch (error) {
 
                 if (error.code == 50007) {
-                    interaction.reply({content: `Sorry **${interaction.user.username}**, but I couldn't find any user with the username **${open.username}**. This is usually because you don't share a server with **Recipient**, or they have DMs disabled.`, ephemeral: true });
+                    interaction.followUp({content: `Sorry **${interaction.user.username}**, but I couldn't find any user with the username **${open.username}**. This is usually because you don't share a server with **Recipient**, or they have DMs disabled.`, ephemeral: true });
+                }
+                
+                if (error.name == 'TypeError') {
+                    interaction.followUp({content: `Sorry **${interaction.user.username}**, but I couldn't find the user. This is usually because you don't share a server with **Recipient**, or they have DMs disabled.\n\nChances are, an extremely rare error occurred.`, ephemeral: true });
                 }
 
                 console.log(error);
@@ -154,6 +161,11 @@ export default async (interaction, client) => {
                     await thread.setArchived(true);
 
                     interaction.followUp({content: `Your conversation with **${targetUser}** has been closed.`, ephemeral: true });
+                }
+
+                if (error.name == 'TypeError') { closing.delete();
+
+                    interaction.followUp({content: `Sorry **${interaction.user.username}**, but I couldn't find the user. This is usually because you don't share a server with **Recipient**, or they have DMs disabled.\n\nChances are, an extremely rare error occurred.`, ephemeral: true });
                 }
 
                 console.log(error);
