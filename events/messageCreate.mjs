@@ -5,7 +5,7 @@ import { write, read, fetchAll } from '../database/index.js';
 export default async () => {
 
     client.on('messageCreate', async (message) => {
-        if (message.stickers?.first()) return; if (message.type == 'RECIPIENT_REMOVE') return;
+        if (message.stickers?.first()) return; if (message.type != 'DEFAULT') return;
     
         if (message.guild) {
             // Server
