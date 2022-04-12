@@ -1,4 +1,5 @@
 import { ContextMenuCommandBuilder } from '@discordjs/builders';
+import { Permissions } from 'discord.js';
 import { write, read, fetchAll, remove } from '../database/index.js';
 
 export const name = 'Close Ticket';
@@ -8,11 +9,16 @@ export default async (interaction, client) => {
 
     if (interaction.commandName !== 'Close Ticket') return console.log('Logic Check:', interaction);
 
+    // Permission check
+    if (!interaction.member.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES)) return interaction.followUp({content: `Sorry **${interaction.member.displayName}**, but you don't have the required permissions to execute this command.`, ephemeral: true });
+
     // Configure options
     const guild = await read("set", { id: 'guild' });
 
+    // Error handling
     try {
 
+        // Respond to user's client
         await interaction.deferReply({ ephemeral: true });
 
         // Fetches the ticket
@@ -55,6 +61,10 @@ export default async (interaction, client) => {
                     await thread.send(`Hello, **${targetUser}!** Your conversation with **${interaction.user.username}** has been closed.\n\nHowever this message could not be delivered. This is usually because you don't share a server with **Recipient**, or they have DMs disabled.`);
                     await thread.setArchived(true);
                     
+                }
+
+                if (error.name == 'TypeError') {
+                    interaction.followUp({content: `Sorry **${interaction.user.username}**, but I couldn't find the user. This is usually because you don't share a server with **Recipient**, or they have DMs disabled.\n\nChances are, an extremely rare error occurred.`, ephemeral: true });
                 }
                 
                 console.log(error);
