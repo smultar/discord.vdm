@@ -1,10 +1,8 @@
 import client from "../index.mjs";
-import { WebhookClient } from 'discord.js';
-import { write, read, fetchAll } from "../database/index.js";
 
 export default async () => {
 
-    client.on('interactionCreate', async (interaction) => { console.log(interaction)
+    client.on('interactionCreate', async (interaction) => {
         const command = client.commands.get(interaction.commandName);
         
         if (!command) return console.log('Command not found:', (!command), interaction.commandName);
