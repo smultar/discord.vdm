@@ -193,7 +193,7 @@ export default async (interaction, client) => {
         }
 
         // Manage Ticket
-        case 'manage': { manage = ((interaction.options.data[0].options.length <= 1) && (interaction.options.data[0].options.length != 0)) ? true : false; console.log(manage);
+        case 'manage': { manage = ((interaction.options.data[0].options.length <= 1) && (interaction.options.data[0].options.length != 0)) ? true : false;
 
             // Checks if user provided a user/channel
             if (!manage) return interaction.followUp({content: `Sorry **${interaction.user.username}**, but either you mentioned more then one setting, or you didn't specify a setting you would like to change.`, ephemeral: true });
