@@ -15,6 +15,7 @@ export default async (interaction, client) => {
     // Configure options
     const guild = await read("set", { id: 'guild' });
     const messageChannel = await read("set", { id: 'messages' });
+    const anonymous = await read("set", { id: 'anonymous' });
 
     let confirmHealth = await client.guilds.cache.get(guild.value);
 
@@ -37,10 +38,10 @@ export default async (interaction, client) => {
         if (session) return interaction.followUp({content: `Sorry **${interaction.user.username}**, but there already is an open ticket with **${interaction.targetMember.displayName}**.`, ephemeral: true });
         
         // Constructs target user
-        let targetUser = (interaction.guild.members.cache.get(open.id)?.displayName) ? interaction.guild.members.cache.get(open.id).displayName : open.username;
+        let targetUser = open.username;
 
         // Confirm user exists || Errors if user does not exist
-        await client.users.cache.get(open.id).send(`Hello, **${targetUser}!** You have a new message from ${interaction.user.username}!\n\n*To reply, simply talk in this \`dm\` channel.*`);
+        await client.users.cache.get(open.id).send(`Hello, **${targetUser}!** You have a new message from **${(anonymous?.value == 'false') ? interaction.user.username : interaction.guild.name}**!\n\n*To reply, simply talk in this \`dm\` channel.*`);
 
         // Creates a new thread for the staff to reply to the user
         let thread = await client.guilds.cache.get(guild.value).channels.cache.get(messageChannel.value).threads.create({
@@ -50,7 +51,7 @@ export default async (interaction, client) => {
         });
 
         // Places a message in the thread
-        thread.send(`Hello, **${targetUser}!** You have a new message from ${interaction.user.username}!\n\n*To reply, simply talk in this \`dm\` channel.*`);
+        thread.send(`Hello, **${targetUser}!** You have a new message from **${(anonymous?.value == 'false') ? interaction.user.username : interaction.guild.name}**!\n\n*To reply, simply talk in this \`dm\` channel.*`);
             
         // Creates a new ticket in memory
         client.messages.set(open.id, {

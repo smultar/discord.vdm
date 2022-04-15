@@ -38,7 +38,7 @@ export default async (interaction, client) => {
     if (interaction.commandName !== 'ticket') return;
 
     // Interaction Options
-    let open, close, manage, user, channel, alert, anonymous, autoClose;
+    let open, close, manage;
 
     // Respond to user's client
     await interaction.deferReply({ephemeral: true});
@@ -49,6 +49,7 @@ export default async (interaction, client) => {
     // Configure options
     const guild = await read("set", { id: 'guild' });
     const messageChannel = await read("set", { id: 'messages' });
+    const anonymous = await read("set", { id: 'anonymous' });
 
     // Command Differentiation
     switch (interaction.options.getSubcommand('open')) {
@@ -70,13 +71,13 @@ export default async (interaction, client) => {
                 let session = client.messages.find(u => u.id === open.id); 
                 
                 // Fetch user
-                let targetUser = (interaction.guild.members.cache.get(session.id)?.displayName) ? interaction.guild.members.cache.get(session.id).displayName : open.username;
+                let targetUser = open.username;
 
                 // Checks if theres a ticket thread in memory
                 if (session) return interaction.followUp({content: `Sorry **${interaction.member.displayName}**, but there already is an open ticket with **${targetUser}**.`, ephemeral: true });
         
                 // Confirm user exists || Errors if user does not exist
-                await client.users.cache.get(open.id).send(`Hello, **${targetUser}!** You have a new message from ${interaction.user.username}!\n\n*To reply, simply talk in this \`dm\` channel.*`);
+                await client.users.cache.get(open.id).send(`Hello, **${targetUser}!** You have a new message from **${ (anonymous?.value == 'false') ? interaction.user.username : interaction.guild.name }**!\n\n*To reply, simply talk in this \`dm\` channel.*`);
 
                 // Creates a new thread for the staff to reply to the user
                 let thread = await client.guilds.cache.get(guild.value).channels.cache.get(messageChannel.value).threads.create({
@@ -86,7 +87,7 @@ export default async (interaction, client) => {
                 });
 
                 // Places a message in the thread
-                thread.send(`Hello, **${targetUser}!** You have a new message from ${interaction.user.username}!\n\n*To reply, simply talk in this \`dm\` channel.*`);
+                thread.send(`Hello, **${targetUser}!** You have a new message from **${ (anonymous?.value == 'false') ? interaction.user.username : interaction.guild.name }**!\n\n*To reply, simply talk in this \`dm\` channel.*`);
                 
                 // Creates a new ticket in memory
                 client.messages.set(open.id, {
@@ -116,7 +117,7 @@ export default async (interaction, client) => {
                 }
                 
                 if (error.name == 'TypeError') {
-                    interaction.followUp({content: `Sorry **${interaction.user.username}**, but I couldn't find the user. This is usually because you don't share a server with **Recipient**, or they have DMs disabled.\n\nChances are, an extremely rare error occurred.`, ephemeral: true });
+                    interaction.followUp({content: `Sorry **${interaction.user.username}**, but I couldn't find the user.\n\nChances are, an extremely rare error occurred on my end.`, ephemeral: true });
                 }
 
                 console.log(error);
@@ -148,21 +149,21 @@ export default async (interaction, client) => {
                 if (!session) return interaction.followUp({content: `Sorry **${interaction.user.username}**, but I couldn't find any ticket with the ${(type == 'user') ? 'user' : 'channel'} **${(type == 'user') ? close.username : close.name}**.`, ephemeral: true });
 
                 // Simplifies the session
-                let targetUser = (type == 'user') ? interaction.guild.members.cache.get(session.id).displayName : close.name;
+                let targetUser = (type == 'user') ? close.username : close.name;
 
                 // Fetches ticket thread from memory
                 let thread = await client.guilds.cache.get(guild.value).channels.cache.get(session.thread);
                 
                 // Updates ticket thread to closed
                 thread.setName(`[Closed] ${targetUser}`);
-                let closing = await thread.send(`Hello, **${targetUser}!** Your conversation with **${interaction.user.username}** has been closed.`);
+                let closing = await thread.send(`Hello, **${targetUser}!** Your conversation with **${(anonymous?.value == 'false') ? interaction.user.username : interaction.guild.name}** has been closed.`);
                 
                 // Removes ticket from memory and database
                 await remove("mes", session.id);
                 await client.messages.delete(session.id);
 
                 // Alerts the user the ticket has been closed
-                await client.users.cache.get(session.id).send(`Hello, **${targetUser}!** Your conversation with **${interaction.user.username}** has been closed.`);
+                await client.users.cache.get(session.id).send(`Hello, **${targetUser}!** Your conversation with **${(anonymous?.value == 'false') ? interaction.user.username : interaction.guild.name}** has been closed.`);
                 await thread.setArchived(true);
 
                 // Alerts the staff that a ticket has been closed
@@ -174,15 +175,14 @@ export default async (interaction, client) => {
                 if (error.code == 50007) { closing.delete(); 
                     
                     // Alerts the user the ticket has been closed
-                    await thread.send(`Hello, **${targetUser}!** Your conversation with **${interaction.user.username}** has been closed.\n\nHowever this message could not be delivered. This is usually because you don't share a server with **Recipient**, or they have DMs disabled.`);
+                    await thread.send(`Hello, **${targetUser}!** Your conversation with **${(anonymous?.value == 'false') ? interaction.user.username : interaction.guild.name}** has been closed.\n\nHowever this message could not be delivered. This is usually because you don't share a server with **Recipient**, or they have DMs disabled.`);
                     await thread.setArchived(true);
 
                     interaction.followUp({content: `Your conversation with **${targetUser}** has been closed.`, ephemeral: true });
                 }
 
                 if (error.name == 'TypeError') { closing.delete();
-
-                    interaction.followUp({content: `Sorry **${interaction.user.username}**, but I couldn't find the user. This is usually because you don't share a server with **Recipient**, or they have DMs disabled.\n\nChances are, an extremely rare error occurred.`, ephemeral: true });
+                    interaction.followUp({content: `Sorry **${interaction.user.username}**, but I couldn't find the user.\n\nChances are, an extremely rare error occurred on my end.`, ephemeral: true });
                 }
 
                 console.log(error);

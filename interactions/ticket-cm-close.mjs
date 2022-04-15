@@ -14,6 +14,8 @@ export default async (interaction, client) => {
 
     // Configure options
     const guild = await read("set", { id: 'guild' });
+    const anonymous = await read("set", { id: 'anonymous' });
+
 
     let confirmHealth = await client.guilds.cache.get(guild.value);
 
@@ -36,7 +38,7 @@ export default async (interaction, client) => {
         if (!session) return interaction.followUp({content: `Sorry **${interaction.user.username}**, but I couldn't find any ticket with the user **${message.member.displayName}**.`, ephemeral: true });
         
         // Simplifies the session
-        let targetUser = interaction.guild.members.cache.get(session.id).displayName;
+        let targetUser = interaction.guild.members.cache.get(session.id).user.username;
 
         // Fetches ticket thread from memory
         let thread = await client.guilds.cache.get(guild.value).channels.cache.get(session.thread);
@@ -48,7 +50,7 @@ export default async (interaction, client) => {
             
             // Updates ticket thread to closed
             thread.setName(`[Closed] ${targetUser}`);
-            await thread.send(`Hello, **${targetUser}!** Your conversation with **${interaction.user.username}** has been closed.`);
+            await thread.send(`Hello, **${targetUser}!** Your conversation with **${(anonymous?.value == 'false') ? interaction.user.username : interaction.guild.name}** has been closed.`);
                 
             // Removes ticket from memory and database
             await remove("mes", session.id);
@@ -56,7 +58,7 @@ export default async (interaction, client) => {
             
             try { // Alerts the user the ticket has been closed
             
-                await client.users.cache.get(session.id).send(`Hello, **${targetUser}!** Your ticket with **${interaction.user.username}** has been closed.`);                                        
+                await client.users.cache.get(session.id).send(`Hello, **${targetUser}!** Your ticket with **${(anonymous?.value == 'false') ? interaction.user.username : interaction.guild.name}** has been closed.`);                                        
                 await thread.setArchived(true);
     
                 // Alerts the staff that a ticket has been closed
@@ -66,7 +68,7 @@ export default async (interaction, client) => {
                     
                     if (error.code == 50007) { // Alerts the user the ticket has been closed
                     
-                        await thread.send(`Hello, **${targetUser}!** Your conversation with **${interaction.user.username}** has been closed.\n\nHowever this message could not be delivered. This is usually because you don't share a server with **Recipient**, or they have DMs disabled.`);
+                        await thread.send(`Hello, **${targetUser}!** Your conversation with **${(anonymous?.value == 'false') ? interaction.user.username : interaction.guild.name}** has been closed.\n\nHowever this message could not be delivered. This is usually because you don't share a server with **Recipient**, or they have DMs disabled.`);
                         await thread.setArchived(true);
                         
                     }
