@@ -56,6 +56,13 @@ export default async (interaction, client) => {
         // Open Ticket
         case 'open': { open = interaction.options.getUser('user');
             
+            // Health Check
+            let confirmHealth = await client.guilds.cache.get(guild.value);
+
+            // Health check
+            if (!confirmHealth) return await interaction.Reply({ content: `Sorry **${interaction.user.username}**, unfortunately this bot hasn't been configured yet, try again later.`, ephemeral: true });
+        
+
             // Error Handling
             try {
                 
@@ -68,7 +75,6 @@ export default async (interaction, client) => {
                 // Checks if theres a ticket thread in memory
                 if (session) return interaction.followUp({content: `Sorry **${interaction.member.displayName}**, but there already is an open ticket with **${targetUser}**.`, ephemeral: true });
         
-
                 // Confirm user exists || Errors if user does not exist
                 await client.users.cache.get(open.id).send(`Hello, **${targetUser}!** You have a new message from ${interaction.user.username}!\n\n*To reply, simply talk in this \`dm\` channel.*`);
 
@@ -122,7 +128,11 @@ export default async (interaction, client) => {
         
         // Close Ticket
         case 'close': { close = (interaction.options.getUser('user')) ? interaction.options.getUser('user') : interaction.options.getChannel('channel');
+            // Health Check
+            let confirmHealth = await client.guilds.cache.get(guild.value);
 
+            if (!confirmHealth) return await interaction.Reply({ content: `Sorry **${interaction.user.username}**, unfortunately this bot hasn't been configured yet, try again later.`, ephemeral: true });
+        
 
             // Checks if user provided a user/channel
             if (!close) return interaction.followUp({content: `Sorry **${interaction.user.username}**, but you need to specify a user or channel to close a ticket.`, ephemeral: true });

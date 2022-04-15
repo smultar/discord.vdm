@@ -16,6 +16,10 @@ export default async (interaction, client) => {
     const guild = await read("set", { id: 'guild' });
     const messageChannel = await read("set", { id: 'messages' });
 
+    let confirmHealth = await client.guilds.cache.get(guild.value);
+
+    // Health check
+    if (!confirmHealth) return await interaction.Reply({ content: `Sorry **${interaction.user.username}**, unfortunately this bot hasn't been configured yet, try again later.`, ephemeral: true });
 
     // Fetches user from interaction
     let open = interaction.options.getUser('user');

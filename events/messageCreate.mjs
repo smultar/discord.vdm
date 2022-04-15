@@ -2,12 +2,23 @@ import { WebhookClient } from 'discord.js';
 import client from '../index.mjs';
 import { write, read, fetchAll } from '../database/index.js';
 
+import settings from '../settings.json';
+import { Console } from 'console';
+
 export default async () => {
 
+    
     client.on('messageCreate', async (message) => {
+        const guild = await read("set", { id: 'guild' });
+    
+        let confirmHealth = await client.guilds.cache.get(guild.value);
+
         if (message.stickers?.first()) return; if (message.type != 'DEFAULT') return;
     
         if (message.guild) {
+            // Health check
+            if (!confirmHealth) return;
+
             // Server
             if (message.author.id == client.user.id) return;
             if (message.webhookId) return;
@@ -79,13 +90,15 @@ export default async () => {
             }
     
     
-        } else {
-            
-            // Direct Messages
+        } else { // Direct Messages
 
-            // Ignores Self
+            // Health check
+            if (!confirmHealth) return message.reply(`Terribly sorry, ${message.author.username}, your message couldn't be sent, because I haven't been configured to send messages to a server.`);
+
+            // Ignores messages from self
             if (message.author.id == client.user.id) return;
 
+            // Creates history entry
             let history = {
                 id: message.id,
                 pair: null,
@@ -94,13 +107,14 @@ export default async () => {
                 type: 'direct',
             }
 
+            // Locates session in memory
             let session = client.messages.get(message.author.id);
 
-            if (session) { 
-                // Continue Session
+            if (session) { // Continue Session
 
                 let avatar = `https://cdn.discordapp.com/avatars/${message.author.id}/${message.author.avatar}.png?size=1024`; 
                 
+                // Error Handling
                 try {
                     if (message.attachments?.first()) {
                         if (message.content) {
@@ -155,21 +169,23 @@ export default async () => {
                 }
     
     
-            } else {
-                console.log('New Session');
+            } else { // Start Session
+
                 // Creates New Session
                 let avatar = `https://cdn.discordapp.com/avatars/${message.author.id}/${message.author.avatar}.png?size=1024`;
 
-                // Messages
-                const guild = await read("set", { id: 'guild' });
+                // Fetches settings
                 const messageChannel = await read("set", { id: 'messages' });
+                const alert = await read("set", { id: 'alert' });
 
+                // Creates thread
                 let thread = await client.guilds.cache.get(guild.value).channels.cache.get(messageChannel.value).threads.create({
                     name: message.author.username,
                     reason: 'Message Session',
                     autoArchiveDuration: 1440,
                 });
 
+                // Stores thread in memory
                 client.messages.set(message.author.id, {
                     id: message.author.id,
                     thread: thread.id,
@@ -178,14 +194,20 @@ export default async () => {
                     status: 'active'
                 });
 
+                // Stores thread in database
                 const save = await write("mes", {
                     id: message.author.id,
                     thread: thread.id,
                     token: client.webhook.token,
                     tokenID: client.webhook.id,
                     status: 'active'
-                })
+                });
 
+                // Introduction
+                let introduction = await thread.send(`**${message.author.username}** has opened a new ${(alert?.value == 'true') ? `<@&${settings.role}>` : 'ticket' }.\n\n*They joined discord <t:${(message.author.createdAt.getTime()/1000).toFixed(0)}:R> and have an id of \`${message.author.id}\`.*`);
+                introduction.pin();
+
+                // Original message contains an attachment
                 if (message.attachments?.first()) {
                     if (message.content) {
 

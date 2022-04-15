@@ -6,13 +6,10 @@ import { write, read, fetchAll, remove, update } from "../database/index.js";
 export default async () => {
 
     client.once("ready", async () => {
-        // Database Synchronized To Maps/Hooks
+        // // Loads database into memory
         // Sync Reminders
         const reminders = await fetchAll("rem");
         reminders.forEach(async (value) => {
-
-            console.log(value);
-
             client.reminders.set(value.id, {
                 id: value.id,
                 time: value.time,
@@ -21,10 +18,9 @@ export default async () => {
             });
         });
 
-        // Sync Messages
+        // Sync Tickets
         const messages = await fetchAll("mes");
         messages.forEach(async (value) => {
-            //await remove("mes", value.id); console.log(remove);
             client.messages.set(value.id, {
                 id: value.id,
                 thread: value.thread,
@@ -40,15 +36,52 @@ export default async () => {
 
         client.webhook = new WebhookClient({ id: webhook.value, token: token.value });
 
-
-        // Sync Threads
+        // // Self Diagnostics
+        // Checks if bot is configured correctly
         const guild = await read("set", { id: 'guild' }).then(value => value.dataValues);
-        const threadParent = await read("set", { id: 'messages' }).then(value => value.dataValues);
-        const threads = await client.guilds.cache.get(guild.value).channels.cache.get(threadParent.value).threads.fetch();
-        const archivedThreads = await client.guilds.cache.get(guild.value).channels.cache.get(threadParent.value).threads.fetchArchived();
 
-        // Self Diagnostics
+        // Optional settings
         try {
+
+            // Alerts
+            // Reads settings
+            let alert = await read("set", { id: 'alert' });
+            
+            // Checks if alert exists and creates an entry it if it doesn't
+            (alert?.value) ? null : await write("set", {
+                id: 'alert',
+                value: 'false',
+            });
+
+            // Anonymous
+            // Reads settings
+            let anonymous = await read("set", { id: 'anonymous' });
+            
+            // Checks if alert exists and creates an entry it if it doesn't
+            (anonymous?.value) ? null : await write("set", {
+                id: 'anonymous',
+                value: 'false',
+            });
+            
+            // Anonymous
+            // Reads settings
+            let autoClose = await read("set", { id: 'auto-close' });
+            
+            // Checks if alert exists and creates an entry it if it doesn't
+            (autoClose?.value) ? null : await write("set", {
+                id: 'auto-close',
+                value: 'false',
+            });
+
+            console.log('Settings Synchronized', alert, anonymous, autoClose);
+
+        } catch (e) {
+            console.error(e);
+        }
+        
+        // Webhook handler
+        try {
+            if (!guild.value) return console.log(`Dormant mode enabled, ${client.user.username} isn't configured yet!`);
 
             // Webhook Check
             let webhookCheck = await client.webhook.send(`Checking self integrity`); await client.webhook.deleteMessage(webhookCheck.id);
@@ -86,9 +119,15 @@ export default async () => {
         };
 
 
-        // Internal Application Tick
+        // // Internal ticks
+        // Discord presence
+        setInterval(() => {
+            
+            client.user.setActivity('your concerns.', { type: 'LISTENING', status: 'online'});
 
-        // Reminder Tick
+        } , 12000000);
+
+        // Reminders
         setInterval(async () => {
                     const reminder = client.reminders.filter(value => value.time <= new Date().getTime());
                     
@@ -137,21 +176,6 @@ export default async () => {
                     });
         
         }, 15000);
-
-
-
-        // Discord Presence
-        // Client Console Update
-        client.user.setActivity('your concerns.', { type: 'LISTENING', status: 'online'});
-
-        
-        // Check if there are any webhooks in the database
-
-        // Check if there are any new threads
-
-        // Check if there are any new reminders
-
-        // Check if there are any new messages
 
         // Client Presence Update
         console.log(`Connection System: ${client.user.tag} is connected to Discord's servers.`);

@@ -2,19 +2,24 @@ import { ContextMenuCommandBuilder } from '@discordjs/builders';
 import { Permissions } from 'discord.js';
 import { write, read, fetchAll, remove } from '../database/index.js';
 
-export const name = 'Close_Ticket';
+export const name = 'Close Ticket';
 
-export const command = new ContextMenuCommandBuilder().setName('Close_Ticket').setType(3)
+export const command = new ContextMenuCommandBuilder().setName('Close Ticket').setType(3)
 export default async (interaction, client) => {
 
-    if (interaction.commandName !== 'Close_Ticket') return;
+    if (interaction.commandName !== 'Close Ticket') return;
 
     // Permission check
     if (!interaction.member.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES)) return interaction.followUp({content: `Sorry **${interaction.member.displayName}**, but you don't have the required permissions to execute this command.`, ephemeral: true });
 
     // Configure options
     const guild = await read("set", { id: 'guild' });
-    
+
+    let confirmHealth = await client.guilds.cache.get(guild.value);
+
+    // Health check
+    if (!confirmHealth) return await interaction.Reply({ content: `Sorry **${interaction.user.username}**, unfortunately this bot hasn't been configured yet, try again later.`, ephemeral: true });
+
     // Error handling
     try {
 

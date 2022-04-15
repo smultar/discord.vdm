@@ -20,27 +20,23 @@ export default async () => {
             if (message.webhookId) return;
             if (message.hasThread) return;
 
-            console.log(message.id);
-            console.log(client.reminders);
-            
-      
             let history = client.history.find(u => u.id === message.id);
             if (history == null) return; 
 
             if (history.type == 'server') {
                 client.users.cache.get(history.user).dmChannel.messages.fetch(history.pair).then((target) => {
-                    console.log(target);
                     target.delete();
                 }).catch(() => {
-                    console.log('Could not delete message');
+                    console.log(`Couldn't delete a message, potentially lacking permissions or the message doesn't exist anymore.`);
                 });
             }
     
-        } else {
-            // DM
-            // Ignores Self
+        } else { // DM
+
+            // Ignores messages from self
             if (message.author.id == client.user.id) return;
 
+            // Locates history entry in memory
             let history = client.history.find(u => u.id === message.id);
             if (history == null) return;
 
