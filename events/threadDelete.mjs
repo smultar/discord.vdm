@@ -18,7 +18,7 @@ export default async () => {
             }
 
             client.messages.delete(target.id);
-            await remove("mes", target.id); console.log(remove);
+            await remove("mes", target.id);
 
         } else {
             console.log('Could not find thread');
