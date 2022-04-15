@@ -1,6 +1,6 @@
 import { ContextMenuCommandBuilder } from '@discordjs/builders';
 import { Permissions } from 'discord.js';
-import { write, read, fetchAll, remove } from '../database/index.js';
+import { write, read, fetchAll, remove } from './database/index.js';
 
 export const name = 'Close Ticket';
 
