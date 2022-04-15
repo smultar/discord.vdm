@@ -3,7 +3,6 @@ import client from '../index.mjs';
 import { write, read, fetchAll } from '../database/index.js';
 
 import settings from '../settings.json';
-import { Console } from 'console';
 
 export default async () => {
 
