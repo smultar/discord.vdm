@@ -47,14 +47,14 @@ const messagesDef = messages.define('messages', {
 });
 
 // Blocked Definitions
-const blocked = new Sequelize('messages', 'admin', 'bizu', {
+const blocked = new Sequelize('blocked', 'admin', 'bizu', {
     host: 'localhost',
     dialect: 'sqlite',
     logging: false,
     storage: './database/blocked.sqlite',
 });
 
-const blockedDef = blocked.define('messages', {
+const blockedDef = blocked.define('blocked', {
     id: { type: Sequelize.STRING, unique: true, primaryKey: true },
     reason: { type: Sequelize.STRING },
     time: { type: Sequelize.STRING },
@@ -78,6 +78,11 @@ const write = async (type, data) => {
                 return stream;
             }
             
+            case "blo": { // Blocked
+                const stream = await blockedDef.create(data);
+                return stream;
+            }
+
             case "mes": { // Messages
                 const stream = await messagesDef.create(data);
                 return stream;
@@ -112,8 +117,8 @@ const read = async (type, query) => {
                 return data;
             }
             
-            case "blo": { // Messages
-                const data = await messagesDef.findOne({where: query});
+            case "blo": { // Blocked
+                    const data = await blockedDef.findOne({where: query});
                 return data;
             }
 
@@ -142,8 +147,8 @@ const update = async (type, target, changes) => {
                 return data;
             }
             
-            case "blo": { // Messages
-                const data = await messagesDef.update( {...changes}, { where: target });
+            case "blo": { // Blocked
+                const data = await blockedDef.update( {...changes}, { where: target });
                 return data;
             }
 
@@ -172,8 +177,8 @@ const fetchAll = async (type, tag) => {
                 return data;
             }
             
-            case "blo": { // Messages
-                const data = (tag) ? messagesDef.findAll({attributes: [`${tag}`]}) : messagesDef.findAll();
+            case "blo": { // Blocked
+                const data = (tag) ? blockedDef.findAll({attributes: [`${tag}`]}) : blockedDef.findAll();
                 return data;
             }
 
@@ -202,8 +207,8 @@ const remove = async (type, target) => {
                 return data;
             }
             
-            case "blo": { // Reminders
-                const data = await remindersDef.destroy({ where: { id: target }});
+            case "blo": { // Blocked
+                const data = await blockedDef.destroy({ where: { id: target }});
                 return data;
             }
             
