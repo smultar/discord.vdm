@@ -1,7 +1,8 @@
 import { SlashCommandBuilder, codeBlock } from '@discordjs/builders';
 import { write, read, fetchAll, remove } from '../database/index.js';
 import { inspect } from 'util';
-import { settings } from '../settings.js';
+
+import settings from '../settings.json'
 
 export const name = 'eval';
 
@@ -28,19 +29,20 @@ export default async (interaction, client) => {
         const authors = settings.authors;
         if (!authors.includes(interaction.user.id)) return  interaction.reply({content: `Sorry **${interaction.user.username}**, but you aren't authorized to use this command.` , ephemeral: true });
 
+        // Sanitizes input
         function clean(text) {
           if (typeof(text) === "string") return text.replace(/`/g, "`" + String.fromCharCode(8203)).replace(/@/g, "@" + String.fromCharCode(8203)); else return text;
         }
         
         try { let evaluated = eval(code);
 
+          // Checks if theres a computed result vs a standard string.
           if (typeof evaluated !== "string") evaluated = inspect(evaluated);
         
           interaction.followUp({ content: codeBlock('js', clean(evaluated)), ephemeral: true});
 
         } catch (err) {
           interaction.followUp({ content: `\`ERROR\` \`\`\`xl\n${clean(err)}\n\`\`\``, ephemeral: true , code: 'js'});
-        
         }
         
     };

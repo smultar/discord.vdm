@@ -3,8 +3,11 @@ import client from '../index.mjs';
 import { write, read, remove, fetchAll } from '../database/index.js';
 
 export default async () => {
+    
 
     client.on('messageUpdate', async (oldMessage, newMessage) => { 
+        
+        let blocked = client.blocked.find(u => u.id === oldMessage.author.id); if (blocked) return;
         if (oldMessage.stickers?.first()) return; if (oldMessage.type != 'DEFAULT') return; if (oldMessage.author == null) return;
         
         if (oldMessage.guild) { // Server

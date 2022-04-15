@@ -18,6 +18,18 @@ export default async () => {
             });
         });
 
+        // Sync Blocked
+        const blocked = await fetchAll("blo");
+        blocked.forEach(async (value) => {
+            client.blocked.set(value.id, {
+                id: value.id,
+                reason: value.reason,
+                time: value.time,
+            });
+
+            console.log(value);
+        });
+
         // Sync Tickets
         const messages = await fetchAll("mes");
         messages.forEach(async (value) => {
@@ -72,8 +84,6 @@ export default async () => {
                 id: 'auto-close',
                 value: 'false',
             });
-
-            console.log('Settings Synchronized', alert, anonymous, autoClose);
 
         } catch (e) {
             console.error(e);

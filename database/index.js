@@ -46,8 +46,21 @@ const messagesDef = messages.define('messages', {
     status: { type: Sequelize.STRING },
 });
 
+// Blocked Definitions
+const blocked = new Sequelize('messages', 'admin', 'bizu', {
+    host: 'localhost',
+    dialect: 'sqlite',
+    logging: false,
+    storage: './database/blocked.sqlite',
+});
 
-// Database Functions
+const blockedDef = blocked.define('messages', {
+    id: { type: Sequelize.STRING, unique: true, primaryKey: true },
+    reason: { type: Sequelize.STRING },
+    time: { type: Sequelize.STRING },
+});
+
+// // Database Functions
 
 const write = async (type, data) => {
     
@@ -56,11 +69,11 @@ const write = async (type, data) => {
         switch (type) {
             case "set": { // Settings
                 const stream = await settingsDef.create(data);
-                return stream; console.log(data)
+                return stream;
             }
             
             case "rem": { // Reminders
-                console.log(data);
+
                 const stream = await remindersDef.create(data);
                 return stream;
             }
@@ -99,6 +112,11 @@ const read = async (type, query) => {
                 return data;
             }
             
+            case "blo": { // Messages
+                const data = await messagesDef.findOne({where: query});
+                return data;
+            }
+
             case "mes": { // Messages
                 const data = await messagesDef.findOne({where: query});
                 return data;
@@ -116,7 +134,6 @@ const update = async (type, target, changes) => {
         switch (type) {
             case "set": { // Settings
                 const data = await settingsDef.update( {...changes}, { where: target });
-                console.log(data);
                 return data;
             }
             
@@ -125,6 +142,11 @@ const update = async (type, target, changes) => {
                 return data;
             }
             
+            case "blo": { // Messages
+                const data = await messagesDef.update( {...changes}, { where: target });
+                return data;
+            }
+
             case "mes": { // Messages
                 const data = await messagesDef.update( {...changes}, { where: target });
                 return data;
@@ -150,6 +172,11 @@ const fetchAll = async (type, tag) => {
                 return data;
             }
             
+            case "blo": { // Messages
+                const data = (tag) ? messagesDef.findAll({attributes: [`${tag}`]}) : messagesDef.findAll();
+                return data;
+            }
+
             case "mes": { // Messages
                 const data = (tag) ? messagesDef.findAll({attributes: [`${tag}`]}) : messagesDef.findAll();
                 return data;
@@ -175,6 +202,11 @@ const remove = async (type, target) => {
                 return data;
             }
             
+            case "blo": { // Reminders
+                const data = await remindersDef.destroy({ where: { id: target }});
+                return data;
+            }
+            
             case "mes": { // Messages
                 const data = await messagesDef.destroy({ where: { id: target }});
                 return data;
@@ -186,19 +218,6 @@ const remove = async (type, target) => {
     }
 };
 
-settingsDef.sync(); remindersDef.sync(); messagesDef.sync();
+settingsDef.sync(); remindersDef.sync(); messagesDef.sync(); blockedDef.sync();
 
 export { write, read, update, remove, fetchAll };
-
-// Notes:
-// - Reminders:
-//     Date and Reason
-
-// - Messages:
-//     Target Channel, Thread under channel, with hook.
-//     Thread States
-
-// - Settings:
-//     Target Channel
-//     Auto Add `Helm` to channel. True/False
-//     Accepting Messages. True/False

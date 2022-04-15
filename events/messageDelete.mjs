@@ -5,6 +5,8 @@ import { write, read, remove, fetchAll } from '../database/index.js';
 export default async () => {
 
     client.on('messageDelete', async (message) => {
+        
+        let blocked = client.blocked.find(u => u.id === message.author.id); if (blocked) return;
         if (message.stickers?.first()) return; if (message.type != 'DEFAULT') return; if (message.author == null) return;
         
         if (message.guild) { // Server

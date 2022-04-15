@@ -10,17 +10,32 @@ export const command = new SlashCommandBuilder()
     .setName('ticket').setDescription('Handle direct messages.')
         .addSubcommand((subcommand) => 
             subcommand
+                .setName('block')
+                .setDescription('Prevents a user from having anymore communication with the bot.')
+                .addUserOption((option) =>  option.setName('user').setDescription('Which user should be blocked.'))
+                .addStringOption((option) =>  option.setName('because').setDescription('Reason for blocking the user. (Optional)'))
+        )
+
+        .addSubcommand((subcommand) => 
+            subcommand
+                .setName('unblock')
+                .setDescription('Notifies and unblocks a user from the bot, allowing communication once more.')
+                .addUserOption((option) =>  option.setName('user').setDescription('Which user should be unblocked.'))
+        )
+
+        .addSubcommand((subcommand) => 
+            subcommand
                 .setName('open')
                 .setDescription('Opens a ticket with a user.')
-                .addUserOption((option) =>  option.setName('user').setDescription('The user to open a ticket with.'))
+                .addUserOption((option) =>  option.setName('user').setDescription('Which user to open a ticket with.'))
         )
 
         .addSubcommand((subcommand) => 
             subcommand
                 .setName('close')
                 .setDescription('Closes a ticket with a user.')
-                .addUserOption((option) =>  option.setName('user').setDescription('The user to open a ticket with.'))
-                .addChannelOption((option) =>  option.setName('channel').setDescription('The channel to open the ticket in.'))
+                .addUserOption((option) =>  option.setName('user').setDescription('Which user to close the ticket with.'))
+                .addChannelOption((option) =>  option.setName('channel').setDescription('Which ticket to close.'))
         )
 
         .addSubcommand((subcommand) => 
@@ -30,7 +45,7 @@ export const command = new SlashCommandBuilder()
                 .addBooleanOption((option) =>  option.setName('alert').setDescription('Whether or not to alert the staff that the ticket has been created.'))
                 .addBooleanOption((option) =>  option.setName('anonymous').setDescription('Whether to display who created and closed a ticket to the end user.'))
                 .addBooleanOption((option) =>  option.setName('auto-close').setDescription('Whether to automatically close a ticket after a certain amount of time.'))
-                .addChannelOption((option) =>  option.setName('channel').setDescription('Which channel to open the tickets in.'))
+                .addChannelOption((option) =>  option.setName('channel').setDescription('Which channel to open tickets in.'))
         )
         
 export default async (interaction, client) => {
@@ -53,6 +68,116 @@ export default async (interaction, client) => {
 
     // Command Differentiation
     switch (interaction.options.getSubcommand('open')) {
+
+        // Block Ticket
+        case 'unblock': { open = interaction.options.getUser('user');
+            
+            // Health Check
+            let confirmHealth = await client.guilds.cache.get(guild?.value);
+
+            // Health check
+            if (!confirmHealth) return await interaction.followUp({ content: `Sorry **${interaction.user.username}**, unfortunately this bot hasn't been configured yet, try again later.`, ephemeral: true });
+        
+
+            // Error Handling
+            try {
+                
+                // Fetches a possible ticket
+                let session = client.blocked.find(u => u.id === open.id); 
+                
+                // Fetch user
+                let targetUser = open.username;
+
+                // Checks if theres a ticket thread in memory
+                if (!session) return interaction.followUp({content: `Sorry **${interaction.member.displayName}**, but **${targetUser}** isn't blocked.`, ephemeral: true });
+        
+                // Confirm user exists || Errors if user does not exist
+                await client.users.cache.get(open.id).send(`Hey **${targetUser}!**, I have great news, you now can communicate with **${(anonymous?.value == 'false') ? interaction.user.username : interaction.guild.name}**!\n\n*If you send a message, a new \`ticket\` will be opened.*`);
+
+                // Removes a blocked user in memory
+                client.blocked.delete(session.id);
+
+                // Removes a blocked user in the database
+                await remove("blo", session.id);
+
+                // Alerts the staff that a ticket has been created
+                interaction.followUp({content: `**${targetUser}** was unotified that they were unblocked.`, ephemeral: true });
+
+            } catch (error) {
+
+                if (error.code == 50007) {
+                    interaction.followUp({content: `**${targetUser}** was unblocked, however i'm sorry **${interaction.user.username}** I couldn't deliver the notification to them, as this is usually because you don't share a server with the **Recipient**, or they have DMs disabled.`, ephemeral: true });
+                }
+                
+                if (error.name == 'TypeError') {
+                    interaction.followUp({content: `Sorry **${interaction.user.username}**, an extremely rare error occurred on my end.`, ephemeral: true });
+                }
+
+                console.log(error);
+
+            }
+
+            break;
+        }
+  
+        // Block Ticket
+        case 'block': { open = interaction.options.getUser('user');
+            
+            // Health Check
+            let confirmHealth = await client.guilds.cache.get(guild?.value);
+
+            // Health check
+            if (!confirmHealth) return await interaction.followUp({ content: `Sorry **${interaction.user.username}**, unfortunately this bot hasn't been configured yet, try again later.`, ephemeral: true });
+        
+
+            // Error Handling
+            try { let reason = await interaction.options.getString('because');
+                
+                // Fetches a possible ticket
+                let session = client.blocked.find(u => u.id === open.id); 
+                
+                // Fetch user
+                let targetUser = open.username;
+
+                // Checks if theres a ticket thread in memory
+                if (session) return interaction.followUp({content: `Sorry **${interaction.member.displayName}**, but **${targetUser}** is already blocked.`, ephemeral: true });
+        
+                // Confirm user exists || Errors if user does not exist
+                await client.users.cache.get(open.id).send(`Unfortunately **${targetUser}**, the decision has been made, you no longer can communicate with **${(anonymous?.value == 'false') ? interaction.user.username : interaction.guild.name}**${(reason) ? `, because ${reason}` : '!'}\n\n*You will received a notification, for when you are allowed to talk in this \`dm\` channel.*`);
+
+                // Creates a new ticket in memory
+                client.blocked.set(open.id, {
+                    id: open.id,
+                    reason: reason,
+                    time: ((Date.now())/1000).toFixed(0),
+                });
+
+                // Creates a new ticket in the database
+                const save = await write("blo", {
+                    id: open.id,
+                    reason: reason,
+                    time: `${((Date.now())/1000).toFixed(0)}`,
+                });
+
+                // Alerts the staff that a ticket has been created
+                interaction.followUp({content: `**${targetUser}** was notified that they were blocked.`, ephemeral: true });
+
+            } catch (error) {
+
+                if (error.code == 50007) {
+                    interaction.followUp({content: `**${targetUser}** were blocked, however i'm sorry **${interaction.user.username}** I couldn't deliver the notification to them, as this is usually because you don't share a server with the **Recipient**, or they have DMs disabled.`, ephemeral: true });
+                }
+                
+                if (error.name == 'TypeError') {
+                    interaction.followUp({content: `Sorry **${interaction.user.username}**, but I couldn't find the user.\n\nChances are, an extremely rare error occurred on my end.`, ephemeral: true });
+                }
+
+                console.log(error);
+
+            }
+
+            break;
+        }
 
         // Open Ticket
         case 'open': { open = interaction.options.getUser('user');
@@ -335,7 +460,7 @@ export default async (interaction, client) => {
                                     }
 
                                 });
-    
+                                
                                 await update("set", {id: 'messages'}, { value: `${option.id}`});
                                 await update("set", {id: 'guild'}, { value: `${option.guild.id}`});
     
@@ -378,6 +503,16 @@ export default async (interaction, client) => {
                                 const webhook = await channel.createWebhook(client.user.username, { avatar: client.user.avatarURL(), reason: 'Self diagnostics repair' });
     
                                 // Save Webhook
+                                if (save[0] == 0) await write("set", {
+                                    id: 'webhook',
+                                    value: `${webhook.id}`,
+                                });
+
+                                if (save[0] == 0) await write("set", {
+                                    id: 'webhookToken',
+                                    value: `${webhook.token}`,
+                                });
+                                
                                 await update("set", {id: 'webhook'}, { value: webhook.id });
                                 await update("set", {id: 'webhookToken'}, { value: webhook.token });
     

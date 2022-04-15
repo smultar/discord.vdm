@@ -12,9 +12,11 @@ export default async () => {
         const guild = await read("set", { id: 'guild' });
     
         let confirmHealth = await client.guilds.cache.get(guild?.value);
+        let blocked = client.blocked.find(u => u.id === message.author.id); if (blocked) return;
 
         if (message.stickers?.first()) return; if (message.type != 'DEFAULT') return;
-    
+        
+
         if (message.guild) {
             // Health check
             if (!confirmHealth) return;
