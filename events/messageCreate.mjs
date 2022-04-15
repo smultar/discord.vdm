@@ -94,6 +94,7 @@ export default async () => {
         } else { // Direct Messages
 
             // Health check
+            let confirmHealth = await client.guilds.cache.get(guild?.value);
             if (!confirmHealth) return message.reply(`Terribly sorry, ${message.author.username}, your message couldn't be sent, because I haven't been configured to send messages to a server.`);
 
             // Ignores messages from self
