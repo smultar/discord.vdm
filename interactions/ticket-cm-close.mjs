@@ -35,7 +35,7 @@ export default async (interaction, client) => {
         let message = interaction.options.getMessage('message');
         
         // Checks if theres a ticket thread in memory
-        if (!session) return interaction.followUp({content: `Sorry **${interaction.user.username}**, but I couldn't find any ticket with the user **${message.member.displayName}**.`, ephemeral: true });
+        if (!session) return interaction.followUp({content: `Sorry **${interaction.user.username}**, but I couldn't find any ticket with the user **${message.author.username}**.`, ephemeral: true });
         
         // Simplifies the session
         let targetUser = interaction.guild.members.cache.get(session.id).user.username;

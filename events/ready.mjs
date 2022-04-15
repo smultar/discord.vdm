@@ -131,10 +131,10 @@ export default async () => {
 
         // // Internal ticks
         // Discord presence
+        client.user.setActivity('your concerns.', { type: 'LISTENING', status: 'online'});
+        
         setInterval(() => {
-            
             client.user.setActivity('your concerns.', { type: 'LISTENING', status: 'online'});
-
         } , 12000000);
 
         // Reminders

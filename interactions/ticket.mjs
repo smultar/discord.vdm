@@ -307,7 +307,7 @@ export default async (interaction, client) => {
 
             } catch (error) {
                 
-                if (error.code == 50007) { closing.delete(); 
+                if (error.code == 50007) {
                     
                     // Alerts the user the ticket has been closed
                     await thread.send(`Hello, **${targetUser}!** Your conversation with **${(anonymous?.value == 'false') ? interaction.user.username : interaction.guild.name}** has been closed.\n\nHowever this message could not be delivered. This is usually because you don't share a server with **Recipient**, or they have DMs disabled.`);
@@ -316,7 +316,7 @@ export default async (interaction, client) => {
                     interaction.followUp({content: `Your conversation with **${targetUser}** has been closed.`, ephemeral: true });
                 }
 
-                if (error.name == 'TypeError') { closing.delete();
+                if (error.name == 'TypeError') {
                     interaction.followUp({content: `Sorry **${interaction.user.username}**, but I couldn't find the user.\n\nChances are, an extremely rare error occurred on my end.`, ephemeral: true });
                 }
 
