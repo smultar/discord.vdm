@@ -14,8 +14,12 @@ export const command = new SlashCommandBuilder()
 export default async (interaction, client) => {
 
     if (interaction.commandName !== 'eval') return;
-    interaction.deferReply({ ephemeral: true });
+    await interaction.deferReply({ ephemeral: true });
 
+    // Pulls owners from config
+    const authors = settings.authors;
+    if (!authors.includes(interaction.user.id)) return  interaction.reply({content: `Sorry **${interaction.user.username}**, but you aren't authorized to use this command.` , ephemeral: true });
+    
     // Command options
     let code = interaction.options.getString('code');
     if (code == null) return await interaction.followUp({content: `Sorry **${interaction.user.username}**, but I couldn't find any options for this command.\n\nTry using the command like this \`/eval code\`` , ephemeral: true });
@@ -25,9 +29,6 @@ export default async (interaction, client) => {
         console.log(`${interaction.user.username} is trying to execute the following code:`);
 
         
-        // Pulls owners from config
-        const authors = settings.authors;
-        if (!authors.includes(interaction.user.id)) return  interaction.reply({content: `Sorry **${interaction.user.username}**, but you aren't authorized to use this command.` , ephemeral: true });
 
         // Sanitizes input
         function clean(text) {
