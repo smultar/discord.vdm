@@ -27,7 +27,7 @@ export default async () => {
                 time: value.time,
             });
 
-            console.log(value);
+            console.log(value.id);
         });
 
         // Sync Tickets

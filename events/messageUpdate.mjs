@@ -7,14 +7,14 @@ export default async () => {
 
     client.on('messageUpdate', async (oldMessage, newMessage) => { 
         
-        let blocked = client.blocked.find(u => u.id === oldMessage.author.id); if (blocked) return;
-        if (oldMessage.stickers?.first()) return; if (oldMessage.type != 'DEFAULT') return; if (oldMessage.author == null) return;
+        let blocked = client.blocked?.find(u => u.id === newMessage.author.id); if (blocked) return;
+        if (newMessage.stickers?.first()) return; if (newMessage.type != 'DEFAULT') return; if (newMessage.author == null) return;
         
-        if (oldMessage.guild) { // Server
+        if (newMessage.guild) { // Server
 
-            if (oldMessage.author.id == client.user.id) return;
-            if (oldMessage.webhookId) return;
-            if (oldMessage.hasThread) return;
+            if (newMessage.author.id == client.user.id) return;
+            if (newMessage.webhookId) return;
+            if (newMessage.hasThread) return;
 
             let history = client.history.find(u => u.id === oldMessage.id);
             if (history == null) return; 
