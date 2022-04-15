@@ -58,10 +58,10 @@ export default async (interaction, client) => {
         case 'open': { open = interaction.options.getUser('user');
             
             // Health Check
-            let confirmHealth = await client.guilds.cache.get(guild.value);
+            let confirmHealth = await client.guilds.cache.get(guild?.value);
 
             // Health check
-            if (!confirmHealth) return await interaction.Reply({ content: `Sorry **${interaction.user.username}**, unfortunately this bot hasn't been configured yet, try again later.`, ephemeral: true });
+            if (!confirmHealth) return await interaction.followUp({ content: `Sorry **${interaction.user.username}**, unfortunately this bot hasn't been configured yet, try again later.`, ephemeral: true });
         
 
             // Error Handling
@@ -80,7 +80,7 @@ export default async (interaction, client) => {
                 await client.users.cache.get(open.id).send(`Hello, **${targetUser}!** You have a new message from **${ (anonymous?.value == 'false') ? interaction.user.username : interaction.guild.name }**!\n\n*To reply, simply talk in this \`dm\` channel.*`);
 
                 // Creates a new thread for the staff to reply to the user
-                let thread = await client.guilds.cache.get(guild.value).channels.cache.get(messageChannel.value).threads.create({
+                let thread = await client.guilds.cache.get(guild?.value).channels.cache.get(messageChannel.value).threads.create({
                     name: targetUser,
                     reason: 'New Ticket Session',
                     autoArchiveDuration: 1440,
@@ -130,9 +130,9 @@ export default async (interaction, client) => {
         // Close Ticket
         case 'close': { close = (interaction.options.getUser('user')) ? interaction.options.getUser('user') : interaction.options.getChannel('channel');
             // Health Check
-            let confirmHealth = await client.guilds.cache.get(guild.value);
+            let confirmHealth = await client.guilds.cache.get(guild?.value);
 
-            if (!confirmHealth) return await interaction.Reply({ content: `Sorry **${interaction.user.username}**, unfortunately this bot hasn't been configured yet, try again later.`, ephemeral: true });
+            if (!confirmHealth) return await interaction.followUp({ content: `Sorry **${interaction.user.username}**, unfortunately this bot hasn't been configured yet, try again later.`, ephemeral: true });
         
 
             // Checks if user provided a user/channel
@@ -152,7 +152,7 @@ export default async (interaction, client) => {
                 let targetUser = (type == 'user') ? close.username : close.name;
 
                 // Fetches ticket thread from memory
-                let thread = await client.guilds.cache.get(guild.value).channels.cache.get(session.thread);
+                let thread = await client.guilds.cache.get(guild?.value).channels.cache.get(session.thread);
                 
                 // Updates ticket thread to closed
                 thread.setName(`[Closed] ${targetUser}`);
@@ -250,7 +250,8 @@ export default async (interaction, client) => {
 
                         // Checks value and cancels if invalid
                         if (option == null) return interaction.followUp({content: `Sorry **${interaction.user.username}**, but that isn't a valid option for the \`channel\` setting`, ephemeral: true }); 
-                        
+                         
+                        console.log(option);
 
                         // Prepares interaction
                         const row = new MessageActionRow()
@@ -340,7 +341,7 @@ export default async (interaction, client) => {
     
                                 // Settings Pull
                                 const messages = await read("set", { id: 'messages' }).then(value => value.dataValues);
-                                const channel = await client.guilds.cache.get(guild.value).channels.cache.get(messages.value);
+                                const channel = await client.guilds.cache.get(guild?.value).channels.cache.get(messages.value);
     
                                 // Create Webhook
                                 const webhook = await channel.createWebhook(client.user.username, { avatar: client.user.avatarURL(), reason: 'Self diagnostics repair' });
@@ -356,11 +357,22 @@ export default async (interaction, client) => {
                                 
                             } else {
 
-                                await update("set", {id: 'messages'}, { value: `${option.id}`});
-    
+                                let save = await update("set", {id: 'messages'}, { value: `${option.id}`});
+
+                                if (save[0] == 0) await write("set", {
+                                    id: 'messages',
+                                    value: `${option.id}`,
+                                });
+
+                                if (save[0] == 0) await write("set", {
+                                    id: 'guild',
+                                    value: `${interaction.guild.id}`,
+                                });
+                                
+                                let messages = await read("set", { id: 'messages' }).then(data => data?.value);
+
                                 // Settings Pull
-                                const messages = await read("set", { id: 'messages' }).then(value => value.dataValues);
-                                const channel = await client.guilds.cache.get(guild.value).channels.cache.get(messages.value);
+                                const channel = await client.guilds.cache.get(interaction.guild.id).channels.cache.get(messages);
     
                                 // Create Webhook
                                 const webhook = await channel.createWebhook(client.user.username, { avatar: client.user.avatarURL(), reason: 'Self diagnostics repair' });

@@ -31,7 +31,7 @@ export default async (interaction, client) => {
         let targetUser = interaction.guild.members.cache.get(session.id).displayName;
 
         // Fetches ticket thread from memory
-        let thread = await client.guilds.cache.get(guild.value).channels.cache.get(session.thread);
+        let thread = await client.guilds.cache.get(guild?.value).channels.cache.get(session.thread);
 
         if (thread) {
             

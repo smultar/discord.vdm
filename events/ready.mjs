@@ -34,11 +34,11 @@ export default async () => {
         const webhook = await read("set", { id: 'webhook' });
         const token = await read("set", { id: 'webhookToken' });
 
-        client.webhook = new WebhookClient({ id: webhook.value, token: token.value });
+        client.webhook = new WebhookClient({ id: webhook?.value, token: token?.value });
 
         // // Self Diagnostics
         // Checks if bot is configured correctly
-        const guild = await read("set", { id: 'guild' }).then(value => value.dataValues);
+        const guild = await read("set", { id: 'guild' }).then(value => value?.dataValues);
 
         // Optional settings
         try {
@@ -81,7 +81,7 @@ export default async () => {
         
         // Webhook handler
         try {
-            if (!guild.value) return console.log(`Dormant mode enabled, ${client.user.username} isn't configured yet!`);
+            if (!guild?.value) return console.log(`Dormant mode enabled, ${client.user.username} isn't configured yet!`);
 
             // Webhook Check
             let webhookCheck = await client.webhook.send(`Checking self integrity`); await client.webhook.deleteMessage(webhookCheck.id);
@@ -96,7 +96,7 @@ export default async () => {
                     // Settings Pull
                     const guild = await read("set", { id: 'guild' }).then(value => value.dataValues);
                     const messages = await read("set", { id: 'messages' }).then(value => value.dataValues);
-                    const channel = await client.guilds.cache.get(guild.value).channels.cache.get(messages.value);
+                    const channel = await client.guilds.cache.get(guild?.value).channels.cache.get(messages.value);
                     
                     // Create Webhook
                     const webhook = await channel.createWebhook(client.user.username, { avatar: client.user.avatarURL(), reason: 'Self diagnostics repair' });
@@ -164,7 +164,7 @@ export default async () => {
         
                             const guild = await read("set", { id: 'guild' }).then(value => value.dataValues);
                             const messages = await read("set", { id: 'reminders' }).then(value => value.dataValues);
-                            const channel = await client.guilds.cache.get(guild.value).channels.cache.get(messages.value);
+                            const channel = await client.guilds.cache.get(guild?.value).channels.cache.get(messages.value);
                             
                             channel.messages.fetch(value.id).then((target) => {
                                 target.delete();

@@ -30,7 +30,7 @@ export default async (interaction, client) => {
     // Command options
     let reminder = interaction.options.getString('message');
     
-    if (reminder == null) return await interaction.reply({content: 'Listen chief, I dunno how the fuck you got this far, but you managed to break all of discord doing this.', ephemeral: true });
+    if (reminder == null) return await interaction.followUp({content: 'Listen chief, I dunno how the fuck you got this far, but you managed to break all of discord doing this.', ephemeral: true });
     
     // Tells user client, that the bot is working on it
     await interaction.deferReply({ephemeral: true});
@@ -89,7 +89,7 @@ export default async (interaction, client) => {
 
         const guild = await read("set", { id: 'guild' }).then(value => value.dataValues);
         const messages = await read("set", { id: 'reminders' }).then(value => value.dataValues);
-        const channel = await client.guilds.cache.get(guild.value).channels.cache.get(messages.value);
+        const channel = await client.guilds.cache.get(guild?.value).channels.cache.get(messages.value);
         const post = await channel.send(`"${reminder}", on **${reminderTimeStamp.toDateString()}**`);
 
         // Save object and post to database and discord server.
@@ -114,7 +114,7 @@ export default async (interaction, client) => {
         
         const guild = await read("set", { id: 'guild' }).then(value => value.dataValues);
         const messages = await read("set", { id: 'reminders' }).then(value => value.dataValues);
-        const channel = await client.guilds.cache.get(guild.value).channels.cache.get(messages.value);
+        const channel = await client.guilds.cache.get(guild?.value).channels.cache.get(messages.value);
         const post = await channel.send(`"${reminder}", on **${reminderTimeStamp.toDateString()}**`);
 
         // Interval

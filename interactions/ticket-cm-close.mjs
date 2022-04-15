@@ -17,10 +17,10 @@ export default async (interaction, client) => {
     const anonymous = await read("set", { id: 'anonymous' });
 
 
-    let confirmHealth = await client.guilds.cache.get(guild.value);
+    let confirmHealth = await client.guilds.cache.get(guild?.value);
 
     // Health check
-    if (!confirmHealth) return await interaction.Reply({ content: `Sorry **${interaction.user.username}**, unfortunately this bot hasn't been configured yet, try again later.`, ephemeral: true });
+    if (!confirmHealth) return await interaction.followUp({ content: `Sorry **${interaction.user.username}**, unfortunately this bot hasn't been configured yet, try again later.`, ephemeral: true });
 
     // Error handling
     try {
@@ -41,7 +41,7 @@ export default async (interaction, client) => {
         let targetUser = interaction.guild.members.cache.get(session.id).user.username;
 
         // Fetches ticket thread from memory
-        let thread = await client.guilds.cache.get(guild.value).channels.cache.get(session.thread);
+        let thread = await client.guilds.cache.get(guild?.value).channels.cache.get(session.thread);
             
         if (thread) {
                 

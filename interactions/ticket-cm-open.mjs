@@ -17,10 +17,10 @@ export default async (interaction, client) => {
     const messageChannel = await read("set", { id: 'messages' });
     const anonymous = await read("set", { id: 'anonymous' });
 
-    let confirmHealth = await client.guilds.cache.get(guild.value);
+    let confirmHealth = await client.guilds.cache.get(guild?.value);
 
     // Health check
-    if (!confirmHealth) return await interaction.Reply({ content: `Sorry **${interaction.user.username}**, unfortunately this bot hasn't been configured yet, try again later.`, ephemeral: true });
+    if (!confirmHealth) return await interaction.followUp({ content: `Sorry **${interaction.user.username}**, unfortunately this bot hasn't been configured yet, try again later.`, ephemeral: true });
 
     // Fetches user from interaction
     let open = interaction.options.getUser('user');
@@ -44,7 +44,7 @@ export default async (interaction, client) => {
         await client.users.cache.get(open.id).send(`Hello, **${targetUser}!** You have a new message from **${(anonymous?.value == 'false') ? interaction.user.username : interaction.guild.name}**!\n\n*To reply, simply talk in this \`dm\` channel.*`);
 
         // Creates a new thread for the staff to reply to the user
-        let thread = await client.guilds.cache.get(guild.value).channels.cache.get(messageChannel.value).threads.create({
+        let thread = await client.guilds.cache.get(guild?.value).channels.cache.get(messageChannel.value).threads.create({
             name: targetUser,
             reason: 'New Ticket Session',
             autoArchiveDuration: 1440,

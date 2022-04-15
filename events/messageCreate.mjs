@@ -11,7 +11,7 @@ export default async () => {
     client.on('messageCreate', async (message) => {
         const guild = await read("set", { id: 'guild' });
     
-        let confirmHealth = await client.guilds.cache.get(guild.value);
+        let confirmHealth = await client.guilds.cache.get(guild?.value);
 
         if (message.stickers?.first()) return; if (message.type != 'DEFAULT') return;
     
@@ -179,7 +179,7 @@ export default async () => {
                 const alert = await read("set", { id: 'alert' });
 
                 // Creates thread
-                let thread = await client.guilds.cache.get(guild.value).channels.cache.get(messageChannel.value).threads.create({
+                let thread = await client.guilds.cache.get(guild?.value).channels.cache.get(messageChannel.value).threads.create({
                     name: message.author.username,
                     reason: 'Message Session',
                     autoArchiveDuration: 1440,

@@ -25,5 +25,5 @@ export default async (interaction, client) => {
     if (interaction.commandName !== 'help') return;
 
     console.log(interaction);
-    interaction.reply({content: 'Help Command Stuff', ephemeral: true });
+    interaction.followUp({content: 'Help Command Stuff', ephemeral: true });
 };
