@@ -2,6 +2,8 @@ import { ContextMenuCommandBuilder } from '@discordjs/builders';
 import { Permissions } from 'discord.js';
 import { write, read } from '../database/index.js';
 
+import settings from '../settings.json';
+
 export const name = 'Open Ticket';
 
 export const command = new ContextMenuCommandBuilder().setName('Open Ticket').setType(2)
@@ -49,6 +51,14 @@ export default async (interaction, client) => {
             reason: 'New Ticket Session',
             autoArchiveDuration: 1440,
         });
+
+        // Fetches settings
+        const alert = await read("set", { id: 'alert' });
+
+        // Introduction
+        let introduction = await thread.send(`**${interaction.user.username}** has opened a new ${(alert?.value == 'true') ? `<@&${settings.role}>` : 'ticket' } for **${targetUser}**.\n\n*They joined discord <t:${(open.createdAt.getTime()/1000).toFixed(0)}:R> and have an id of \`${open.id}\`.*`);
+        introduction.pin();
+        
 
         // Places a message in the thread
         thread.send(`Hello, **${targetUser}!** You have a new message from **${(anonymous?.value == 'false') ? interaction.user.username : interaction.guild.name}**!\n\n*To reply, simply talk in this \`dm\` channel.*`);
