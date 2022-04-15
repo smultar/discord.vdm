@@ -188,7 +188,7 @@ const remove = async (type, target) => {
 
 settingsDef.sync(); remindersDef.sync(); messagesDef.sync();
 
-export { write, read, update, remove,  fetchAll };
+export { write, read, update, remove, fetchAll };
 
 // Notes:
 // - Reminders:
