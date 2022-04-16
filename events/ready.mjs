@@ -142,8 +142,8 @@ export default async () => {
                     const reminder = client.reminders.filter(value => value.time <= new Date().getTime());
                     
                     reminder.forEach(async (value) => {
-                        console.log(value);
-                        console.log(value.interval !== 'null')
+                        //console.log(value);
+                        //console.log(value.interval !== 'null')
                         if (value.interval !== 'null') {
         
                             const reminderTimeStamp = new Date(~~value.time + ~~value.interval);
@@ -162,13 +162,13 @@ export default async () => {
                                 value: value.value,
                             });
                             
-                            console.log(client.reminders);
+                            //console.log(client.reminders);
         
                             client.users.cache.get('203639901693018112').send(`${value.value}\n\nI'll remind you again on **${reminderTimeStamp}**`);
         
                         } else {
         
-                            client.reminders.delete(value.id); console.log(client.reminders);
+                            client.reminders.delete(value.id); /// console.log(client.reminders);
                             client.users.cache.get('203639901693018112').send(`${value.value}`);
                             await remove("rem", value.id);
         

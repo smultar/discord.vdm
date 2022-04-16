@@ -5,7 +5,7 @@ import { write, read, fetchAll, remove } from '../database/index.js';
 export default async () => {
 
     client.on('threadDelete', async (thread) => {
-        console.log('Deleted Thread:', thread);
+        //console.log('Deleted Thread:', thread);
 
         let target = client.messages.find(u => u.thread === thread.id);
 

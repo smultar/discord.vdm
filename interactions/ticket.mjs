@@ -386,7 +386,7 @@ export default async (interaction, client) => {
                         // Checks value and cancels if invalid
                         if (option == null) return interaction.followUp({content: `Sorry **${interaction.user.username}**, but that isn't a valid option for the \`channel\` setting`, ephemeral: true }); 
                          
-                        console.log(option);
+                        //console.log(option);
 
                         // Prepares interaction
                         const row = new MessageActionRow()
