@@ -10,7 +10,7 @@ export default async (interaction, client) => {
     if (interaction.commandName !== 'Close Ticket') return;
 
     // Permission check
-    if (!interaction.member.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES)) return interaction.followUp({content: `Sorry **${interaction.member.displayName}**, but you don't have the required permissions to execute this command.`, ephemeral: true });
+    if (!interaction.member.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES)) return interaction.reply({content: `Sorry **${interaction.member.displayName}**, but you don't have the required permissions to execute this command.`, ephemeral: true });
 
     // Configure options
     const guild = await read("set", { id: 'guild' });
@@ -38,7 +38,10 @@ export default async (interaction, client) => {
         if (!session) return interaction.followUp({content: `Sorry **${interaction.user.username}**, but I couldn't find any ticket with the user **${message.author.username}**.`, ephemeral: true });
         
         // Simplifies the session
-        let targetUser = interaction.guild.members.cache.get(session.id).user.username;
+        let targetUser = interaction.guild.members.cache.get(session.id)?.user?.username;
+
+        // Checks if the user is the author of the ticket
+        if (targetUser !== message.author.username) return interaction.followUp({content: `Sorry **${interaction.user.username}**, the target user isn't in the server anymore. You need to close the ticket with the \`/ticket close channel\` or *right clicking any message within the ticket instead.*`, ephemeral: true });
 
         // Fetches ticket thread from memory
         let thread = await client.guilds.cache.get(guild?.value).channels.cache.get(session.thread);

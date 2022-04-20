@@ -12,7 +12,7 @@ export default async (interaction, client) => {
     if (interaction.commandName !== 'Open Ticket') return;
     
     // Permission check
-    if (!interaction.member.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES)) return interaction.followUp({content: `Sorry **${interaction.member.displayName}**, but you don't have the required permissions to execute this command.`, ephemeral: true });
+    if (!interaction.member.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES)) return interaction.reply({content: `Sorry **${interaction.member.displayName}**, but you don't have the required permissions to execute this command.`, ephemeral: true });
 
     // Configure options
     const guild = await read("set", { id: 'guild' });

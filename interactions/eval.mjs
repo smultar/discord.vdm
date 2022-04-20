@@ -18,7 +18,7 @@ export default async (interaction, client) => {
 
     // Pulls owners from config
     const authors = settings.authors;
-    if (!authors.includes(interaction.user.id)) return  interaction.reply({content: `Sorry **${interaction.user.username}**, but you aren't authorized to use this command.` , ephemeral: true });
+    if (!authors.includes(interaction.user.id)) return  interaction.followUp({content: `Sorry **${interaction.user.username}**, but you aren't authorized to use this command.` , ephemeral: true });
     
     // Command options
     let code = interaction.options.getString('code');
