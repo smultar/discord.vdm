@@ -7,7 +7,7 @@ export default async () => {
 
     client.on('messageUpdate', async (oldMessage, newMessage) => { 
         
-        let blocked = client.blocked?.find(u => u.id === newMessage.author.id); if (blocked) return;
+        let blocked = client.blocked?.find(u => u.id === newMessage?.author?.id); if (blocked) return;
         if (newMessage.stickers?.first()) return; if (newMessage.type != 'DEFAULT') return; if (newMessage.author == null) return;
         
         if (newMessage.guild) { // Server
