@@ -1,8 +1,8 @@
 {
-  "name": "mozu",
+  "name": "discord.vdm",
   "author": "Smultar",
   "version": "1.0.0",
-  "description": "Personal Discord Assistant",
+  "description": "Virtual Direct messages manager",
   "license": "ISC",
   "main": "index.mjs",
   "type": "module",
@@ -13,8 +13,6 @@
   "keywords": [
     "Discord",
     "Smultar",
-    "Bizu",
-    "Mozu",
     "Art",
     "People"
   ],
