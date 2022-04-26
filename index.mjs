@@ -1,6 +1,6 @@
 import Discord, { Client, Collection, Intents } from 'discord.js';
 import fs from 'fs'; import sequelize from 'sequelize';
-import settings from './settings.json';
+import settings from './settings.json' assert {type: 'json'};
 
 // Instantiate client
 const client = new Client({ 

@@ -2,7 +2,7 @@ import { WebhookClient } from 'discord.js';
 import client from '../index.mjs';
 import { write, read, fetchAll } from '../database/index.js';
 
-import settings from '../settings.json';
+import settings from '../settings.json' assert {type: 'json'};
 
 export default async () => {
 

@@ -2,7 +2,7 @@ import { SlashCommandBuilder, codeBlock } from '@discordjs/builders';
 import { write, read, fetchAll, remove } from '../database/index.js';
 import { inspect } from 'util';
 
-import settings from '../settings.json'
+import settings from '../settings.json' assert {type: 'json'};
 
 export const name = 'eval';
 

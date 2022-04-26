@@ -4,7 +4,7 @@ import { MessageActionRow, MessageButton, WebhookClient, Permissions } from 'dis
 import { write, read, fetchAll, update, remove } from '../database/index.js';
 import { optionFetch } from '../utilities.mjs';
 
-import settings from '../settings.json';
+import settings from '../settings.json' assert {type: 'json'};
 
 
 export const name = 'ticket';

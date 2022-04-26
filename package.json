@@ -4,7 +4,8 @@
   "version": "1.0.0",
   "description": "Personal Discord Assistant",
   "license": "ISC",
-  "main": "mozu.js",
+  "main": "index.mjs",
+  "type": "module",
   "scripts": {
     "dev": "nodemon --experimental-json-modules index.mjs",
     "start": "node --experimental-json-modules index.mjs"

@@ -2,7 +2,7 @@ import { ContextMenuCommandBuilder } from '@discordjs/builders';
 import { Permissions } from 'discord.js';
 import { write, read } from '../database/index.js';
 
-import settings from '../settings.json';
+import settings from '../settings.json' assert {type: 'json'};
 
 export const name = 'Open Ticket';
 
