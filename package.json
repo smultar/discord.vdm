@@ -6,7 +6,8 @@
   "license": "ISC",
   "main": "mozu.js",
   "scripts": {
-    "dev": "nodemon --experimental-json-modules index.mjs"
+    "dev": "nodemon --experimental-json-modules index.mjs",
+    "start": "node --experimental-json-modules index.mjs"
   },
   "keywords": [
     "Discord",
