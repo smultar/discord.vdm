@@ -38,10 +38,10 @@ export default async (interaction, client) => {
         if (!session) return interaction.followUp({content: `Sorry **${interaction.user.username}**, but I couldn't find any ticket with the user **${message.author.username}**.`, ephemeral: true });
         
         // Simplifies the session
-        let targetUser = interaction.guild.members.cache.get(session.id)?.user?.username;
+        let targetUser = (interaction.guild.members.cache.get(session.id)?.user?.username) ? interaction.guild.members.cache.get(session.id).user.username : interaction.guild.channels.cache.get(session.thread).name;
 
         // Checks if the user is the author of the ticket
-        if (targetUser !== message.author.username) return interaction.followUp({content: `Sorry **${interaction.user.username}**, the target user isn't in the server anymore. You need to close the ticket with the \`/ticket close channel\` or *right clicking any message within the ticket instead.*`, ephemeral: true });
+        if (targetUser !== message.author.username) interaction.followUp({content: `Sorry **${interaction.user.username}**, the target user isn't in the server anymore. So I used the ticket name to represent the \`user\`. *This can be inaccurate sometimes.*`, ephemeral: true });
 
         // Fetches ticket thread from memory
         let thread = await client.guilds.cache.get(guild?.value).channels.cache.get(session.thread);
