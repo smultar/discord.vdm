@@ -91,10 +91,23 @@ export default async () => {
         
         // Webhook handler
         try {
-            if (!guild?.value) return console.log(`Dormant mode enabled, ${client.user.username} isn't configured yet!`);
 
-            // Webhook Check
-            let webhookCheck = await client.webhook.send(`Checking self integrity`); await client.webhook.deleteMessage(webhookCheck.id);
+            if (!guild?.value) {
+                // Client Presence Update
+                console.log(`Connection System: ${client.user.tag} is connected to Discord's servers.`);
+                
+                // Discord presence
+                client.user.setActivity('your concerns.', { type: 'LISTENING', status: 'online'});
+
+                deploy();
+
+                return console.log(`Dormant mode enabled, ${client.user.username} isn't configured yet! Please restart after using the ticket manage command.`);
+
+            } else {
+                
+                // Webhook Check
+                let webhookCheck = await client.webhook.send(`Checking self integrity`); await client.webhook.deleteMessage(webhookCheck.id);
+            }
 
         } catch (e) {
 
