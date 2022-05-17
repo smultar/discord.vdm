@@ -1,11 +1,11 @@
 import Sequelize from "sequelize";
 
 // Setting Definitions
-const settings = new Sequelize('settings', 'admin', 'bizu', {
+const settings = new Sequelize('settings', process.env.DB_USER, process.env.DB_PASS, {
     host: 'localhost',
     dialect: 'sqlite',
     logging: false,
-    storage: './database/settings.sqlite',
+    storage: './database/database.sqlite',
 });
 
 const settingsDef = settings.define('settings', {
@@ -15,11 +15,11 @@ const settingsDef = settings.define('settings', {
 
 
 // Reminder Definitions
-const reminders = new Sequelize('reminders', 'admin', 'bizu', {
+const reminders = new Sequelize('reminders', process.env.DB_USER, process.env.DB_PASS, {
     host: 'localhost',
     dialect: 'sqlite',
     logging: false,
-    storage: './database/reminders.sqlite',
+    storage: './database/database.sqlite',
 });
 
 const remindersDef = reminders.define('reminders', {
@@ -30,15 +30,15 @@ const remindersDef = reminders.define('reminders', {
 });
 
 
-// Messages Definitions
-const messages = new Sequelize('messages', 'admin', 'bizu', {
+// Sessions Definitions
+const sessions = new Sequelize('sessions', process.env.DB_USER, process.env.DB_PASS, {
     host: 'localhost',
     dialect: 'sqlite',
     logging: false,
-    storage: './database/messages.sqlite',
+    storage: './database/database.sqlite',
 });
 
-const messagesDef = messages.define('messages', {
+const sessionsDef = sessions.define('sessions', {
     id: { type: Sequelize.STRING, unique: true, primaryKey: true },
     thread: { type: Sequelize.STRING },
     token: { type: Sequelize.STRING },
@@ -47,11 +47,11 @@ const messagesDef = messages.define('messages', {
 });
 
 // Blocked Definitions
-const blocked = new Sequelize('blocked', 'admin', 'bizu', {
+const blocked = new Sequelize('blocks',  process.env.DB_USER, process.env.DB_PASS, {
     host: 'localhost',
     dialect: 'sqlite',
     logging: false,
-    storage: './database/blocked.sqlite',
+    storage: './database/database.sqlite',
 });
 
 const blockedDef = blocked.define('blocked', {
@@ -84,7 +84,7 @@ const write = async (type, data) => {
             }
 
             case "mes": { // Messages
-                const stream = await messagesDef.create(data);
+                const stream = await sessionsDef.create(data);
                 return stream;
             }
         }
@@ -123,7 +123,7 @@ const read = async (type, query) => {
             }
 
             case "mes": { // Messages
-                const data = await messagesDef.findOne({where: query});
+                const data = await sessionsDef.findOne({where: query});
                 return data;
             }
         }
@@ -153,7 +153,7 @@ const update = async (type, target, changes) => {
             }
 
             case "mes": { // Messages
-                const data = await messagesDef.update( {...changes}, { where: target });
+                const data = await sessionsDef.update( {...changes}, { where: target });
                 return data;
             }
         }
@@ -183,7 +183,7 @@ const fetchAll = async (type, tag) => {
             }
 
             case "mes": { // Messages
-                const data = (tag) ? messagesDef.findAll({attributes: [`${tag}`]}) : messagesDef.findAll();
+                const data = (tag) ? sessionsDef.findAll({attributes: [`${tag}`]}) : sessionsDef.findAll();
                 return data;
             }
         }
@@ -213,7 +213,7 @@ const remove = async (type, target) => {
             }
             
             case "mes": { // Messages
-                const data = await messagesDef.destroy({ where: { id: target }});
+                const data = await sessionsDef.destroy({ where: { id: target }});
                 return data;
             }
         }
@@ -223,6 +223,6 @@ const remove = async (type, target) => {
     }
 };
 
-settingsDef.sync(); remindersDef.sync(); messagesDef.sync(); blockedDef.sync();
+settingsDef.sync(); remindersDef.sync(); sessionsDef.sync(); blockedDef.sync();
 
 export { write, read, update, remove, fetchAll };
