@@ -1,0 +1,21 @@
+version: "3.8"
+
+services:
+  discord.vdm:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - DISCORD_SECRET=${DISCORD_SECRET}
+        - SERVICE_NAME=${SERVICE_NAME}
+        - HOST_NAME=${HOST_NAME}
+        - IMAGE=${IMAGE}
+        - TAG=${TAG}
+        - BUILD=${BUILD}
+        
+    image: ${IMAGE}:${TAG}
+
+    container_name: ${CONTAINER_NAME}
+    hostname: ${HOST_NAME}
+
+    restart: unless-stopped

@@ -1,0 +1,18 @@
+version: "3.8"
+
+services:
+  discord.vdm:
+    image: ${IMAGE}:${TAG}
+
+    container_name: ${CONTAINER_NAME}
+    
+    hostname: ${HOST_NAME}
+
+    labels:
+    - 'com.centurylinklabs.watchtower.enable=true'
+
+    volumes:
+      - ./database.sqlite:/usr/src/discord.vdm/database/database.sqlite
+      - ./.env/:/usr/src/discord.vdm/.env
+
+    restart: unless-stopped
