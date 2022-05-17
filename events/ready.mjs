@@ -50,7 +50,7 @@ export default async () => {
 
         // // Self Diagnostics
         // Checks if bot is configured correctly
-        const guild = await read("set", { id: 'guild' }).then(value => value?.dataValues);
+        const guild = await read("set", { id: 'guild' }).then(value => value?.dataValues).catch(console.error);
 
         // Optional settings
         try {
@@ -117,8 +117,8 @@ export default async () => {
                     let settings = await fetchAll("set"); console.log(settings); settings = settings.map(value => value.dataValues);
 
                     // Settings Pull
-                    const guild = await read("set", { id: 'guild' }).then(value => value.dataValues);
-                    const messages = await read("set", { id: 'messages' }).then(value => value.dataValues);
+                    const guild = await read("set", { id: 'guild' }).then(value => value.dataValues).catch(console.error);
+                    const messages = await read("set", { id: 'messages' }).then(value => value.dataValues).catch(console.error);
                     const channel = await client.guilds.cache.get(guild?.value).channels.cache.get(messages.value);
                     
                     // Create Webhook
@@ -185,8 +185,8 @@ export default async () => {
                             client.users.cache.get('203639901693018112').send(`${value.value}`);
                             await remove("rem", value.id);
         
-                            const guild = await read("set", { id: 'guild' }).then(value => value.dataValues);
-                            const messages = await read("set", { id: 'reminders' }).then(value => value.dataValues);
+                            const guild = await read("set", { id: 'guild' }).then(value => value.dataValues).catch(console.error);
+                            const messages = await read("set", { id: 'reminders' }).then(value => value.dataValues).catch(console.error);
                             const channel = await client.guilds.cache.get(guild?.value).channels.cache.get(messages.value);
                             
                             channel.messages.fetch(value.id).then((target) => {

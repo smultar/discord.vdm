@@ -8,7 +8,7 @@ export const optionFetch = async (interaction, name) => {
                 type: 'BOOLEAN',
                 bool: interaction.options.getBoolean(name),
             };
-        };
+        }
 
         case 'CHANNEL': {
 
@@ -16,7 +16,7 @@ export const optionFetch = async (interaction, name) => {
                 type: 'CHANNEL',
                 channel: interaction.options.getChannel(name),
             };
-        };
+        }
 
         case 'USER': {
 
@@ -24,7 +24,7 @@ export const optionFetch = async (interaction, name) => {
                 type: 'USER',
                 user: interaction.options.getUser(name),
             };
-        };
+        }
 
         case 'STRING': {
 
@@ -32,7 +32,7 @@ export const optionFetch = async (interaction, name) => {
                 type: 'STRING',
                 string: interaction.options.getString(name),
             };
-        };
+        }
 
         case 'NUMBER': {
 
@@ -40,7 +40,7 @@ export const optionFetch = async (interaction, name) => {
                 type: 'NUMBER',
                 number: interaction.options.getNumber(name),
             };
-        };
+        }
 
         case 'INTEGER': {
 
@@ -48,7 +48,7 @@ export const optionFetch = async (interaction, name) => {
                 type: 'INTEGER',
                 integer: interaction.options.getInteger(name),
             };
-        };
+        }
 
         case 'ROLE': {
 
@@ -56,7 +56,7 @@ export const optionFetch = async (interaction, name) => {
                 type: 'ROLE',
                 role: interaction.options.getRole(name),
             };
-        };
+        }
 
         default: {
 
@@ -64,8 +64,8 @@ export const optionFetch = async (interaction, name) => {
                 type: 'UNKNOWN',
                 unknown: interaction.options.getMentionable(name),
             };
-        };
-    };
+        }
+    }
 
 };
 

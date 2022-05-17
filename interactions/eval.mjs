@@ -9,6 +9,11 @@ export const command = new SlashCommandBuilder()
     .setName('eval').setDescription('Handle direct messages.')
     .addStringOption((option) =>  option.setName('code').setDescription('Custom code that needs to be executed'));
 
+  // Sanitizes input
+  function clean(text) {
+    if (typeof(text) === "string") return text.replace(/`/g, "`" + String.fromCharCode(8203)).replace(/@/g, "@" + String.fromCharCode(8203)); else return text;
+  };
+    
         
 export default async (interaction, client) => {
 
@@ -29,11 +34,6 @@ export default async (interaction, client) => {
 
         
 
-        // Sanitizes input
-        function clean(text) {
-          if (typeof(text) === "string") return text.replace(/`/g, "`" + String.fromCharCode(8203)).replace(/@/g, "@" + String.fromCharCode(8203)); else return text;
-        }
-        
         try { let evaluated = eval(code);
 
           // Checks if theres a computed result vs a standard string.

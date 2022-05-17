@@ -346,7 +346,7 @@ export default async (interaction, client) => {
 
                         return interaction.followUp({content: `Hey **${interaction.user.username}**, the \`alerts\` setting was successfully turned **${(option) ? 'on': 'off'}**\n\n*You${(option) ? '\'ll' : ' won\'t'} automatically get added to new tickets*`, ephemeral: true }); 
 
-                    };
+                    }
 
                     case 'anonymous': {
                         // Fetches options object
@@ -360,7 +360,7 @@ export default async (interaction, client) => {
  
                         return interaction.followUp({content: `Hey **${interaction.user.username}**, the \`anonymous\` setting was successfully turned **${(option) ? 'on': 'off'}**\n\n*People **${(option) ? 'won\'t' : 'will'}** know it was you who **open** or **closed** tickets going forward.*`, ephemeral: true }); 
  
-                    };
+                    }
 
                     case 'auto-close': {
                         // Fetches options object
@@ -374,7 +374,7 @@ export default async (interaction, client) => {
  
                         return interaction.followUp({content: `Hey **${interaction.user.username}**, the \`auto-close\` setting was successfully turned **${(option) ? 'on': 'off'}**\n\n*Tickets will now **${(option) ? 'close' : 'stay open'}** after extended durations of in-activity.*`, ephemeral: true }); 
  
-                    };
+                    }
 
                     case 'channel': {
                         // Fetches options object
@@ -472,7 +472,7 @@ export default async (interaction, client) => {
                                 await update("set", {id: 'guild'}, { value: `${option.guild.id}`});
     
                                 // Settings Pull
-                                const messages = await read("set", { id: 'messages' }).then(value => value.dataValues);
+                                const messages = await read("set", { id: 'messages' }).then(value => value.dataValues).catch(console.error);
                                 const channel = await client.guilds.cache.get(guild?.value).channels.cache.get(messages.value);
     
                                 // Create Webhook
@@ -501,7 +501,7 @@ export default async (interaction, client) => {
                                     value: `${interaction.guild.id}`,
                                 });
                                 
-                                let messages = await read("set", { id: 'messages' }).then(data => data?.value);
+                                let messages = await read("set", { id: 'messages' }).then(data => data?.value).catch(console.error);
 
                                 // Settings Pull
                                 const channel = await client.guilds.cache.get(interaction.guild.id).channels.cache.get(messages);
