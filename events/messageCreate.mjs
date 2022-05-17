@@ -1,8 +1,5 @@
-import { WebhookClient } from 'discord.js';
 import client from '../index.mjs';
 import { write, read, fetchAll } from '../database/index.js';
-
-import settings from '../settings.json' assert {type: 'json'};
 
 export default async () => {
 
@@ -206,7 +203,7 @@ export default async () => {
                 });
 
                 // Introduction
-                let introduction = await thread.send(`**${message.author.username}** has opened a new ${(alert?.value == 'true') ? `<@&${settings.role}>` : 'ticket' }.\n\n*They joined discord <t:${(message.author.createdAt.getTime()/1000).toFixed(0)}:R> and have an id of \`${message.author.id}\`.*`);
+                let introduction = await thread.send(`**${message.author.username}** has opened a new ${(alert?.value == 'true') ? `<@&${process.env.ROLE}>` : 'ticket' }.\n\n*They joined discord <t:${(message.author.createdAt.getTime()/1000).toFixed(0)}:R> and have an id of \`${message.author.id}\`.*`);
                 introduction.pin();
 
                 // Original message contains an attachment

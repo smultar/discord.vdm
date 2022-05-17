@@ -2,7 +2,6 @@ import { SlashCommandBuilder, codeBlock } from '@discordjs/builders';
 import { write, read, fetchAll, remove } from '../database/index.js';
 import { inspect } from 'util';
 
-import settings from '../settings.json' assert {type: 'json'};
 
 export const name = 'eval';
 
@@ -17,7 +16,7 @@ export default async (interaction, client) => {
     await interaction.deferReply({ ephemeral: true });
 
     // Pulls owners from config
-    const authors = settings.authors;
+    const authors = process.env.AUTHORS.split(', ');
     if (!authors.includes(interaction.user.id)) return  interaction.followUp({content: `Sorry **${interaction.user.username}**, but you aren't authorized to use this command.` , ephemeral: true });
     
     // Command options
