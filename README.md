@@ -48,10 +48,10 @@ If you are running the project in a **Docker** container.
     AUTHORS="123456787, 1234566344"
    
 
-**Keep in mind.**
-   All docker images are build with the internal directory of `/usr/src/${IMAGE}` or `/usr/src/discord.vdm`. 
+**Keep in mind.**<br>
+All docker images are built with the internal directory of `/usr/src/${IMAGE}` or `/usr/src/discord.vdm`. 
 
 Use this information wisely when trying to map volumes. *I already did this, but this is in case you wanted to do something fancy.*
 
-**First Time Setup**
-Once you have set up the bot, it will run in **dormant mode**, untill you run the `/ticket manage channel` command. This allows the bot to set it self up. All the other commands explain themselfs, if you read there descriptions.
+**First Time Setup**<br>
+Once you have set up the bot, it will run in **dormant mode**, until you run the `/ticket manage channel` command. This allows the bot to set it self up. All the other commands explain themselfs, if you read there descriptions.
