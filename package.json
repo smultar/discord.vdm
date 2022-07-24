@@ -24,7 +24,7 @@
     "dotenv": "^16.0.1",
     "glob": "^7.2.0",
     "node": "17.4.0",
-    "sequelize": "^6.15.0",
+    "sequelize": "^6.21.2",
     "sqlite3": "^5.0.0",
     "translatte": "^3.0.1"
   },
